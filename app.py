@@ -1,6 +1,7 @@
 
 from flask import Flask, render_template, redirect, render_template, request, jsonify, Response
 import os
+import flask
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -14,10 +15,9 @@ oauth_scopes = [
 "https://www.googleapis.com/auth/userinfo.profile", #gets google email adress
 ]
 
-from firebase import *
+from routes import *
 
 app = Flask(__name__)
-app.register_blueprint(routes)
 
 def credentials_to_dict(credentials):
     return {'token': credentials.token,
@@ -30,23 +30,30 @@ def credentials_to_dict(credentials):
 
 
 app = Flask(__name__, static_folder="build/static", template_folder="build")
+app.register_blueprint(routes)
+
+def first_name(name):
+    l = name.split(" ")
+    return l[0]
 
 @app.route("/")
 def index():
-    if('credentials' in flask.session):
-        if(flask.session['user_info']['email'] in admins):
+    if(flask.session):
+        if('credentials' in flask.session):
             return render_template('index.html',
                                    logged=True,
-                                   user = flask.session['user_info']['email'],
+                                   user_email = flask.session['user_info']['email'],
+                                   user_name = first_name(flask.session['user_info']['name']),
                                    current_host= flask.request.url_root
                                    )
     else:
         return render_template('index.html',
-                               logged=False,
-                               user = flask.session['user_info']['email'],
-                               current_host= flask.request.url_root
-                               )
+                           logged=False,
+                           current_host= flask.request.url_root
+                           )
+
 
 app.debug=True
+app.secret_key = os.environ['SECRET_KEY']
 
-app.run(host='0.0.0.0')
+app.run(host='localhost')

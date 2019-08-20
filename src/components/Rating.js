@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container } from 'react-bootstrap';
-
+import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, Dropdown, Accordion} from 'react-bootstrap';
 
 var inner_rating_style={
   "display":"inline"
@@ -10,12 +9,15 @@ class Rating extends Component{
   constructor(props){
     super(props)
     this.state={
-      ratings:[false,false,false,false,false],
-      comment:"No comment"
+      ratings:[0,0,0,0,0],
+      comment:"No comment",
+      isRating:false,
+      additionalRating:""
     }
     this.onRatingChange = this.onRatingChange.bind(this)
     this.onSelectChange = this.onSelectChange.bind(this)
-
+    this.onAddRatingClick = this.onAddRatingClick.bind(this)
+    this.onAddRatingChange = this.onAddRatingChange.bind(this)
   }
 
   starStyle(i){
@@ -36,7 +38,6 @@ class Rating extends Component{
   }
 
   onRatingChange(i){
-    console.log(i)
     var ratings=this.state.ratings
     if(!ratings[i]){
       for(let j=0; j<i+1; j++){
@@ -54,12 +55,10 @@ class Rating extends Component{
   renderRating = () => {
     let ratings=[]
     for(let i=0; i<5; i++){
-          console.log(i)
           ratings.push(
             <div
               className="rating-star"
               style={this.starStyle(i)}
-              custom
               label={(i+1).toString()}
               key={i}
               type={'radio'}
@@ -78,28 +77,89 @@ class Rating extends Component{
   }
 
 
-  render(){
+  onAddRatingClick(){
+    var state = this.state.isRating
+    state = !this.state.isRating
+    this.setState({isRating:state})
+  }
+
+  onAddRatingChange(event){
+    this.setState({additionalRating:event.target.value})
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    var type_constant = 99
+    var type = this.props.type
+    if(type=="breakfast"){
+      type_constant = 1
+    }
+    else if(type=="lunch"){
+      type_constant = 2
+    }
+    else if(type=="dinner"){
+      type_constant = 3
+    }
+    // Check if the suplied props is changed
+    if(prevProps.submitDetector !== this.props.submitDetector) {
+      if(prevProps.submitDetector + type_constant == this.props.submitDetector){
+
+
+        var input_data = {
+          meal_name:this.props.name,
+          meal_title:this.props.title,
+          star_rating:(this.state.ratings).reduce((a,b) => a + b, 0),
+          comment:this.state.comment,
+          additionalRating:this.state.additionalRating
+        }
+        this.props.collect_function(input_data)
+      }  // run the function with the suplied new property
+    }
+  }
+
+  renderAddRatingTextbox(){
+    if(this.state.isRating){
+      return(
+        <div className="additional-rating">
+          <Form.Label>Additional Comments</Form.Label>
+          <Form.Control as="textarea" rows="3" value={this.state.additionalRating} onChange={(event)=>{this.onAddRatingChange(event)}}></Form.Control>
+        </div>
+      )
+    }
     return(
-      <div class="inner_rating_style">
-          <Form>
-              <div key={`custom-inline-radio`} className="mb-3" style={{"marginLeft":10}}>
-                {<div>
-                  <div style={{"display":"inline"}}>{this.renderRating()}</div>
-                  <select value={this.state.comment} name="descriptions" style={{"display":"inline", "fontSize":20, "marginLeft":20}}
-                  onChange={(event) => {this.onSelectChange(event)}}>
-                    <option value="No comment">No comment</option>
-                    <option value="Perfect!">Perfect!</option>
-                    <option value="Too salty">Too salty</option>
-                    <option value="Too sweet">Too sweet</option>
-                    <option value="Overcooked">Overcooked</option>
-                    <option value="Undercooked">Undercooked</option>
-                    <option value="Lacking flavor/spice">Lacking flavor/spice</option>
-                  </select>
-                </div>}
-              </div>
-          </Form>
-      </div>
+      <div></div>
     )
+  }
+
+  render(){
+    if(this.props.user){
+      return(
+        <div class="inner_rating_style">
+            <Form>
+                <div key={`custom-inline-radio`} className="mb-3" style={{"marginLeft":10}}>
+                  {<div>
+                    <div style={{"display":"inline"}}>{this.renderRating()}</div>
+                    <select value={this.state.comment} name="descriptions" style={{"display":"inline", "fontSize":20, "marginLeft":20}}
+                    onChange={(event) => {this.onSelectChange(event)}} className="rating-select">
+                      <option value="No comment">No comment</option>
+                      <option value="Perfect!">Perfect!</option>
+                      <option value="Too salty">Too salty</option>
+                      <option value="Too sweet">Too sweet</option>
+                      <option value="Overcooked">Overcooked</option>
+                      <option value="Undercooked">Undercooked</option>
+                      <option value="Lacking flavor/spice">Lacking flavor/spice</option>
+                      <option value="Bitter">Bitter</option>
+                    </select>
+                    <Button className="add-rating-button" onClick={this.onAddRatingClick}><p className="add-rating-button-text">+</p></Button>
+                    {this.renderAddRatingTextbox()}
+                  </div>}
+                </div>
+            </Form>
+        </div>
+      )
+    }
+    else{
+      return <div></div>
+    }
   }
 }
 

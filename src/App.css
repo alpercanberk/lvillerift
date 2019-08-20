@@ -1,0 +1,31 @@
+#sign-in-button{
+  color:#BA1A26 !important;
+  border-color:#BA1A26 !important;
+}
+
+.greeting{
+  margin:30px;
+  font-size: 2.1rem !important;
+}
+
+.sign-in-prompt{
+  margin:30px;
+  font-size: 1.2rem !important;
+}
+
+.add-rating-button{
+  background-color:black !important;
+  height:30px !important;
+}
+
+.add-rating-button-text{
+  vertical-align:middle !important;
+}
+
+.rating-select{
+  margin:0px 12px;
+}
+
+.additional-rating{
+  margin:10px;
+}

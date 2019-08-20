@@ -1,15 +1,35 @@
+from . import routes
+
+import os, sys, inspect
+from flask import Flask, redirect, render_template, request, jsonify, url_for
+from flask import render_template
+import flask
 
 
 oauth_scopes = [
+"openid",
 "https://www.googleapis.com/auth/userinfo.email", #gets google profile
 "https://www.googleapis.com/auth/userinfo.profile", #gets google email adress
 ]
+
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
 
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
+import datetime
+import json
+
+def credentials_to_dict(credentials):
+    return {'token': credentials.token,
+          'refresh_token': credentials.refresh_token,
+          'token_uri': credentials.token_uri,
+          'client_id': credentials.client_id,
+          'client_secret': credentials.client_secret,
+          'scopes': credentials.scopes}
 
 @routes.route('/auth/google')
 def auth():
