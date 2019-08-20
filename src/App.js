@@ -2,6 +2,9 @@ import React, {Component}  from 'react';
 import Rating from './components/Rating.js'
 import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, ListGroup } from 'react-bootstrap';
 import './App.css';
+import axios from "axios"
+
+var uploadURL = window.CURRENT_HOST + "complete_meal";
 
 var menu=[
   {
@@ -33,6 +36,7 @@ class App extends Component{
       submit_detector:0,
     }
     this.submitRating = this.submitRating.bind(this)
+    this.collectInputData = this.collectInputData.bind(this)
   }
 
   renderSignInButton(){
@@ -88,10 +92,22 @@ class App extends Component{
     new_submit = new_submit + type_constant
     this.setState({submit_detector:new_submit});
     this.setState({ratings_input:[]});
+
+    axios
+          .post(uploadURL, {
+            user: window.user_email,
+            complete_type:type
+          })
+          .then((response) => {
+            console.log(response)
+            alert(response.data);
+          });
   }
 
   collectInputData(input){
-    console.log(input)
+    var inputs_processing = this.state.ratings_input
+    inputs_processing.push(input)
+    this.setState({ratings_input:inputs_processing})
   }
 
 
