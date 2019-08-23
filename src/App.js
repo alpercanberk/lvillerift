@@ -227,7 +227,7 @@ class App extends Component{
             <ListGroup variant="flush">
               {menu[meal_type].items.map((item) => {
                   return(
-                  <ListGroup.Item>
+                  <ListGroup.Item style={{"paddingTop":20}}>
                   <div><h5 class="food_title">{item}</h5>
                   <Rating
                   title={menu[meal_type].title}

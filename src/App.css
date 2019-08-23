@@ -5,7 +5,7 @@
 
 .greeting{
   margin:30px;
-  font-size: 2.1rem !important;
+  font-size: 1.5rem !important;
 }
 
 .sign-in-prompt{
@@ -16,18 +16,26 @@
 .add-rating-button{
   background-color:black !important;
   height:30px !important;
+  margin-top:15px !important;
+  margin-left:10px !important;
+  width:195px !important;
+  border-radius:6px !important;
 }
 
 .add-rating-button-text{
   vertical-align:middle !important;
+  line-height: 1;
 }
 
 .rating-select{
-  margin:0px 12px;
+  margin:5px 10px !important;
+  border-radius: 5px !important;
+  background-color:white !important;
 }
 
 .additional-rating{
-  margin:10px;
+  margin:5px 5px !important;
+  margin-top:12px !important;
 }
 
 .already-rated{
@@ -38,4 +46,12 @@
 .menu-title{
   background-color: #BA1A26 !important;
   color:white !important;
+}
+
+.stars{
+  margin:10px !important;
+}
+
+.select{
+  border: 1px solid black !important;
 }

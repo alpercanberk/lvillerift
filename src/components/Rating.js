@@ -23,17 +23,18 @@ class Rating extends Component{
   starStyle(i){
     var color = "black"
     if(this.state.ratings[i]==0){
-      color="black"
+      color="white"
     }
     else{
       color="#f2c213"
     }
     return{
       "display":"inline",
-      "fontSize":30,
+      "fontSize":40,
       "margin":5,
       "cursor":"pointer",
-      "color":color
+      "color":color,
+      "textShadow":"0px 1px black, 0px -1px black, 1px 0px black, -1px 0px black",
     }
   }
 
@@ -119,7 +120,6 @@ class Rating extends Component{
     if(this.state.isRating){
       return(
         <div className="additional-rating">
-          <Form.Label>Additional Comments</Form.Label>
           <Form.Control
           as="textarea"
           rows="3"
@@ -141,8 +141,8 @@ class Rating extends Component{
             <Form>
                 <div key={`custom-inline-radio`} className="mb-3" style={{"marginLeft":10}}>
                   {<div>
-                    <div style={{"display":"inline"}}>{this.renderRating()}</div>
-                    <select value={this.state.comment} name="descriptions" style={{"display":"inline", "fontSize":20, "marginLeft":20}}
+                    <div style={{"display":"inline"}} className="stars">{this.renderRating()}</div>
+                    <select className="select" value={this.state.comment} name="descriptions" style={{"display":"inline", "fontSize":20, "marginLeft":15, "border":"1px solid black"}}
                     onChange={(event) => {this.onSelectChange(event)}} className="rating-select">
                       <option value="No comment">No comment</option>
                       <option value="Perfect!">Perfect!</option>
@@ -153,7 +153,7 @@ class Rating extends Component{
                       <option value="Lacking flavor/spice">Lacking flavor/spice</option>
                       <option value="Bitter">Bitter</option>
                     </select>
-                    <Button className="add-rating-button" onClick={this.onAddRatingClick}><p className="add-rating-button-text">+</p></Button>
+                    <div><Button className="add-rating-button" onClick={this.onAddRatingClick}><p className="add-rating-button-text">+ Additional comments</p></Button></div>
                     {this.renderAddRatingTextbox()}
                   </div>}
                 </div>
