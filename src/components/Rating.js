@@ -103,15 +103,14 @@ class Rating extends Component{
     if(prevProps.submitDetector !== this.props.submitDetector) {
       if(prevProps.submitDetector + type_constant == this.props.submitDetector){
 
-
         var input_data = {
           meal_name:this.props.name,
           meal_title:this.props.title,
-          star_rating:(this.state.ratings).reduce((a,b) => a + b, 0),
+          star_rating:((this.state.ratings).reduce((a,b) => a + b, 0)).toString(),
           comment:this.state.comment,
           additionalRating:this.state.additionalRating
         }
-        this.props.collect_function(input_data)
+        this.props.collect_function(input_data, this.props.meal_length)
       }  // run the function with the suplied new property
     }
   }
@@ -121,7 +120,12 @@ class Rating extends Component{
       return(
         <div className="additional-rating">
           <Form.Label>Additional Comments</Form.Label>
-          <Form.Control as="textarea" rows="3" value={this.state.additionalRating} onChange={(event)=>{this.onAddRatingChange(event)}}></Form.Control>
+          <Form.Control
+          as="textarea"
+          rows="3"
+          value={this.state.additionalRating}
+          onChange={(event)=>{this.onAddRatingChange(event)}}>
+          </Form.Control>
         </div>
       )
     }
@@ -131,7 +135,7 @@ class Rating extends Component{
   }
 
   render(){
-    if(this.props.user){
+    if(this.props.user && !this.props.is_complete){
       return(
         <div class="inner_rating_style">
             <Form>

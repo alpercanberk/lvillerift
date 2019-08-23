@@ -29,3 +29,13 @@
 .additional-rating{
   margin:10px;
 }
+
+.already-rated{
+  margin:17px;
+  color:#BA1A26 !important;
+}
+
+.menu-title{
+  background-color: #BA1A26 !important;
+  color:white !important;
+}
