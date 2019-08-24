@@ -89,7 +89,7 @@ app.jinja_env.globals.update(ratings_to_color=ratings_to_color)
 
 
 def update_meals_cron():
-    docs = users_ref.limit(40).get()
+    docs = users_ref.limit(40).stream()
     updated = 0
 
     for doc in docs:
@@ -107,7 +107,7 @@ def update_meals_cron():
         return delete_collection(coll_ref, 30)
 
 def clear_ratings():
-    docs = ratings_ref.limit(40).get()
+    docs = ratings_ref.limit(40).stream()
     deleted = 0
 
     for doc in docs:
@@ -153,7 +153,7 @@ def credentials_to_dict(credentials):
           'scopes': credentials.scopes}
 
 def update_daily_menu(menu):
-    docs = daily_menu_ref.limit(5).get()
+    docs = daily_menu_ref.limit(5).stream()
     for doc in docs:
         print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
         doc.reference.delete()
@@ -177,14 +177,13 @@ def update():
 
 @app.route("/")
 def index():
-    menu = gtd(daily_menu_ref.get())[0]
-    print menu
+    menu = gtd(daily_menu_ref.stream())[0]
     if(flask.session):
         if('credentials' in flask.session):
             if(str(flask.session["user_info"]["email"]) in admin_list):
-                return render_template("all_ratings.html", ratings_list=(gtd(ratings_ref.get())), current_host= flask.request.url_root)
+                return render_template("all_ratings.html", ratings_list=(gtd(ratings_ref.stream())), current_host= flask.request.url_root)
             if("@lawrenceville.org" in flask.session["user_info"]["email"]):
-                if(gtd(users_ref.where('email','==',str(flask.session['user_info']['email'])).get())):
+                if(gtd(users_ref.where('email','==',str(flask.session['user_info']['email'])).stream())):
                     return render_template('index.html',
                                            user_email = str(flask.session['user_info']['email']),
                                            user_name = first_name(str(flask.session['user_info']['name'])),
@@ -210,21 +209,18 @@ def index():
 
 @app.route("/users")
 def users():
-    return str(gtd(users_ref.get()))
+    return str(gtd(users_ref.stream()))
 
 
 @app.route('/complete_meal', methods=['POST'])
 def add_later_user():
     if request.method == 'POST':
-        data = ast.literal_eval(request.data)
+        data = json.loads(request.data)
         user =  data["user"]
         meal_type = data["complete_type"]
         found_user = users_ref.where('email', '==', user)
-        found_user_dict = gtd(found_user.get())
+        found_user_dict = gtd(found_user.stream())
         if(found_user_dict):
-            print "User found!!"
-            print found_user_dict[0]
-            print found_user_dict[0][meal_type]
             if(not found_user_dict[0][meal_type]):
                 user_id = found_user_dict[0]["id"]
                 users_ref.document(user_id).update({
@@ -235,7 +231,6 @@ def add_later_user():
                 return "You can only rate a meal once per day."
 
         else:
-            print "Nothing found :("
             return "nope"
     else:
         return "whacchu doin?"
@@ -244,7 +239,7 @@ def add_later_user():
 def completed_meals():
     user = str(flask.session["user_info"]["email"])
     found_user = users_ref.where('email', '==', user)
-    found_user_dict = gtd(found_user.get())[0]
+    found_user_dict = gtd(found_user.stream())[0]
     return {
         "breakfast":found_user_dict["breakfast"],
         "lunch":found_user_dict["lunch"],
@@ -255,11 +250,6 @@ def completed_meals():
 def receive_rating():
     if request.method == 'POST':
         data = ast.literal_eval(request.data)
-        print "data:"
-        print str(data)
-        print data['ratings']
-        print data['ratings'][0]
-        print type(data['ratings'][0]['comment'])
         ratings_ref.document(generate_code(10)).set(data)
         return "rating received!"
     else:
@@ -267,7 +257,7 @@ def receive_rating():
 
 @app.route('/all_ratings', methods=['GET'])
 def all_ratings():
-    return str(gtd(ratings_ref.get()))
+    return str(gtd(ratings_ref.stream()))
 
 
 app.debug=True
