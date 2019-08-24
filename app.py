@@ -87,7 +87,6 @@ app.jinja_env.globals.update(number_to_color=number_to_color)
 app.jinja_env.globals.update(ratings_to_color=ratings_to_color)
 
 
-
 def update_meals_cron():
     docs = users_ref.limit(40).stream()
     updated = 0
@@ -237,13 +236,21 @@ def add_later_user():
 
 @app.route('/completed_meals')
 def completed_meals():
-    user = str(flask.session["user_info"]["email"])
-    found_user = users_ref.where('email', '==', user)
-    found_user_dict = gtd(found_user.stream())[0]
-    return {
-        "breakfast":found_user_dict["breakfast"],
-        "lunch":found_user_dict["lunch"],
-        "dinner":found_user_dict["dinner"]
+    if(flask.session["user_info"]):
+        user = str(flask.session["user_info"]["email"])
+        found_user = users_ref.where('email', '==', user)
+        found_user_dict = gtd(found_user.stream())[0]
+        return {
+            "breakfast":found_user_dict["breakfast"],
+            "lunch":found_user_dict["lunch"],
+            "dinner":found_user_dict["dinner"]
+            }
+    #debug stuff
+    else:
+        return {
+            "breakfast":False,
+            "lunch":False,
+            "dinner":False
         }
 
 @app.route('/receive_rating', methods=['POST'])
