@@ -1,0 +1,37 @@
+<html>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script>
+  var ratings_list = "{{ratings_list}}"
+  </script>
+
+  <h3 style="margin:10px"> Ratings from the past week:</h3>
+  <button class="btn btn-danger" style="width:100px;margin:10px;"><a href="{{current_host}}logout" style="color:white;text-decoration:none;">Sign Out</a></button>
+  <div class="accordion" id="accordionExample">
+    {%for ratings in ratings_list %}
+    <div class="card">
+      <div class="card-header" id="h{{ratings.id}}">
+        <h2 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#c{{ratings.id}}" aria-expanded="true" aria-controls="c{{ratings.id}}">
+            <span style="color:{{ratings_to_color(ratings.ratings)}};text-shadow: -0.5px 0 black, 0 0.5px black, 0.5px 0 black, 0 -0.5px black;margin:0px 5px;font-size:25px;text-decoration:none;">•</span><span style="color:black">{{ ratings.ratings[0].meal_title }} from {{ ratings.user_email}}</span>
+          </button>
+        </h2>
+      </div>
+
+      <div id="c{{ratings.id}}" class="collapse show" aria-labelledby="h{{ratings.id}}" data-parent="#accordionExample">
+        <div class="card-body">
+          {% for rating in ratings.ratings%}
+          <div style="border:1px solid gray;padding:10px;margin:5px;border-radius:5px">
+            <h4>{{ rating.meal_name }}</h4>
+            <div style="font-size:20px"><Strong>Star rating:</strong><span style="color:{{number_to_color(rating.star_rating)}};margin:2px;font-size:25px;border:2px;text-shadow: -0.5px 0 black, 0 0.5px black, 0.5px 0 black, 0 -0.5px black;">{{ rating.star_rating }}</span></div>
+            <div><strong>Comment</strong>: {{rating.comment}}</div>
+            <div><strong>Additional Rating:</strong> {{rating.additionalRating}}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
