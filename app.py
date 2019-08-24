@@ -263,4 +263,7 @@ def all_ratings():
 app.debug=True
 app.secret_key = os.environ['SECRET_KEY']
 
-app.run()
+if __name__ == '__main__':
+    app.config['SESSION_TYPE'] = 'filesystem'
+    # app.config['SECRET_KEY'] = 'something something'
+    app.run()
