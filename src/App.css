@@ -23,7 +23,7 @@
 }
 
 .add-rating-button-text{
-  vertical-align:middle !important;
+  width: 100% !important;
   line-height: 1;
 }
 
@@ -50,6 +50,11 @@
 
 .stars{
   margin:10px !important;
+}
+
+.logo{
+  height:45px;
+  width:140px;
 }
 
 .select{

@@ -3,6 +3,7 @@ import Rating from './components/Rating.js'
 import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, ListGroup } from 'react-bootstrap';
 import './App.css';
 import axios from "axios"
+import Logo from "./riftlogo1.png"
 
 var uploadURL = window.CURRENT_HOST + "complete_meal";
 var completedMealsURL = window.CURRENT_HOST + "completed_meals";
@@ -200,7 +201,7 @@ class App extends Component{
           crossorigin="anonymous"
         />
         <Navbar bg="light" expand="lg" color="red">
-          <Navbar.Brand href="#home"><h3>Lawrenceville RIFT</h3></Navbar.Brand>
+          <Navbar.Brand href="#home"><img src={Logo} alt="website_logo" class="logo"/></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
