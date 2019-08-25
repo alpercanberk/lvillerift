@@ -53,10 +53,14 @@
 }
 
 .logo{
-  height:45px;
-  width:140px;
+  height:60px;
+  width:180px;
 }
 
 .select{
   border: 1px solid black !important;
+}
+
+.mission-title{
+  margin: 20px;
 }

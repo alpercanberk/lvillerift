@@ -1,9 +1,20 @@
 import React, {Component}  from 'react';
 import Rating from './components/Rating.js'
+import Mission from './components/Mission.js'
+import FullRating from './components/FullRating.js'
+
 import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, ListGroup } from 'react-bootstrap';
 import './App.css';
 import axios from "axios"
 import Logo from "./riftlogo1.png"
+
+import {
+  BrowserRouter as Router,
+  HashRouter,
+  Route,
+  Link
+} from "react-router-dom";
+import { Redirect, IndexRedirect } from "react-router-dom";
 
 var uploadURL = window.CURRENT_HOST + "complete_meal";
 var completedMealsURL = window.CURRENT_HOST + "completed_meals";
@@ -47,6 +58,7 @@ class App extends Component{
     }
     this.submitRating = this.submitRating.bind(this)
     this.collectInputData = this.collectInputData.bind(this)
+    this.renderRating = this.renderRating.bind(this)
   }
 
   componentWillMount(){
@@ -187,6 +199,43 @@ class App extends Component{
     }
   }
 
+  renderRating(meal_types){
+    return(
+      <div>
+      {meal_types.map((meal_type) => {
+        console.log(menu)
+        console.log(meal_type)
+        return(
+          <Card style={{"marginLeft":30, "marginRight":30, "marginTop":30}}>
+          <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
+          <ListGroup variant="flush">
+            {menu[meal_type].items.map((item) => {
+                return(
+                <ListGroup.Item style={{"paddingTop":20}}>
+                <div><h5 class="food_title">{item}</h5>
+                <Rating
+                title={menu[meal_type].title}
+                meal_length={menu[meal_type].items.length}
+                name={menu[meal_type].name}
+                type={menu[meal_type].type}
+                submitDetector={this.state.submit_detector}
+                collect_function={this.collectInputData}
+                name={item}
+                user={window.user_email}
+                is_complete={this.state.completed[this.mealToIndex(menu[meal_type].type)]}
+                />
+                </div>
+                </ListGroup.Item>)
+            })}
+          </ListGroup>
+          {this.renderSubmitRating(menu[meal_type].type)}
+          </Card>
+        )
+      })}
+      </div>
+    )
+  }
+
   readyToSend(){
     this.setState({ready_to_send:true})
   }
@@ -194,61 +243,37 @@ class App extends Component{
   render(){
     return (
       <div className="App">
-        <link
-          rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous"
-        />
-        <Navbar bg="light" expand="lg" color="red">
-          <Navbar.Brand href="#home"><img src={Logo} alt="website_logo" class="logo"/></Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link">Mission</Nav.Link>
-              <NavDropdown title="Past Ratings" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Work</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">In</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Progress</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">Check later</NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-            {this.renderSignInButton()}
-          </Navbar.Collapse>
-        </Navbar>
-        {this.renderGreeting()}
-        {meal_types.map((meal_type) => {
-          console.log(menu)
-          console.log(meal_type)
-          return(
-            <Card style={{"marginLeft":30, "marginRight":30, "marginTop":30}}>
-            <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
-            <ListGroup variant="flush">
-              {menu[meal_type].items.map((item) => {
-                  return(
-                  <ListGroup.Item style={{"paddingTop":20}}>
-                  <div><h5 class="food_title">{item}</h5>
-                  <Rating
-                  title={menu[meal_type].title}
-                  meal_length={menu[meal_type].items.length}
-                  name={menu[meal_type].name}
-                  type={menu[meal_type].type}
-                  submitDetector={this.state.submit_detector}
-                  collect_function={this.collectInputData}
-                  name={item}
-                  user={window.user_email}
-                  is_complete={this.state.completed[this.mealToIndex(menu[meal_type].type)]}
-                  />
-                  </div>
-                  </ListGroup.Item>)
-              })}
-            </ListGroup>
-            {this.renderSubmitRating(menu[meal_type].type)}
-            </Card>
-          )
-        })}
+        <HashRouter>
+          <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+          />
+          <Navbar bg="light" expand="lg" color="red">
+            <Navbar.Brand href="#home">
+              <img src={Logo} alt="website_logo" class="logo"/>
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="mr-auto">
+                <Nav.Link href="#home">Home</Nav.Link>
+                <Nav.Link href="#mission">Mission</Nav.Link>
+                <NavDropdown title="Past Ratings" id="basic-nav-dropdown">
+                  <NavDropdown.Item href="#action/3.1">Work</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.2">In</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">Progress</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item href="#action/3.4">Check later</NavDropdown.Item>
+                </NavDropdown>
+              </Nav>
+              {this.renderSignInButton()}
+            </Navbar.Collapse>
+          </Navbar>
+          <Route exact path="/" render={() => <Redirect to="/home" />} />
+          <Route path="/mission" component={Mission} />
+          <Route path="/home" render={() => <div>{this.renderGreeting()}{this.renderRating(meal_types)}</div>}/>
+        </HashRouter>
       </div>
     );
   }
