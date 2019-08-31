@@ -260,12 +260,12 @@ def completed_meals():
             "dinner":found_user_dict["dinner"]
             }
     #debug stuff
-    else:
-        return {
-            "breakfast":False,
-            "lunch":False,
-            "dinner":False
-        }
+    # else:
+    #     return {
+    #         "breakfast":False,
+    #         "lunch":False,
+    #         "dinner":False
+    #     }
 
 @app.route('/receive_rating', methods=['POST'])
 def receive_rating():
@@ -371,7 +371,8 @@ scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, se
 scheduler.add_job(update_daily_menu, 'cron', hour=8, minute=0, second=0)
 scheduler.start()
 
-update_daily_menu()
+#debug:
+# update_daily_menu()
 
 
 if __name__ == '__main__':
