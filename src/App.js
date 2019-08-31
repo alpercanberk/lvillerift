@@ -62,8 +62,12 @@ class App extends Component{
   }
 
   componentWillMount(){
+    console.log("Completed meals url:")
+    console.log(completedMealsURL)
     axios.get(completedMealsURL).then(
       (response)=>{
+        console.log("Component will mount!")
+        console.log(response)
         var new_completed = this.state.completed
         if(!response.data.breakfast){
           new_completed[0]=false
@@ -183,7 +187,9 @@ class App extends Component{
     this.setState({ratings_input:inputs_processing})
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot){
+    console.log("Component did update!")
+    console.log(this.state)
     if(prevState.ratings_input != this.state.ratings_input){
       if(this.state.ratings_input.length > 0){
         console.log("ready! make request!!");

@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, redirect, render_template, request, jsonify, Response
 import os
 import flask
@@ -33,7 +32,7 @@ admin_list = [
     "alper.tu.canberk@gmail.com"
 ]
 
-firebase_credentials = ast.literal_eval(os.environ['FIREBASE_CREDENTIALS'])
+firebase_credentials = json.loads(os.environ['FIREBASE_CREDENTIALS'])
 cred = credentials.Certificate(firebase_credentials)
 
 firebase_admin.initialize_app(cred)
@@ -201,10 +200,25 @@ def index():
                 return 'You should try to sign in with your Lawrenceville email <button><a href="/logout">Go back</a></button>'
 
     else:
-        return render_template('index.html',
-                           current_host= flask.request.url_root,
-                           menu = menu
-                           )
+        if not request.url.startswith('http://127'):
+            return render_template('index.html',
+                               current_host= flask.request.url_root,
+                               menu = menu
+                               )
+
+        #only for debug!! find a way to get rid of this as well.
+        else:
+            flask.session["user_info"]={
+                "email":"acanberk21@lawrenceville.org",
+                "name":"Alper Canberk"
+            }
+
+            return render_template('index.html',
+                                   user_email = "acanberk21@lawrenceville.org",
+                                   user_name = "Alper",
+                                   current_host= flask.request.url_root,
+                                   menu = menu
+                                   )
 
 @app.route("/users")
 def users():
@@ -256,9 +270,10 @@ def completed_meals():
 @app.route('/receive_rating', methods=['POST'])
 def receive_rating():
     if request.method == 'POST':
-        data = ast.literal_eval(request.data)
+        print("Receieved a rating!")
+        data = json.loads(request.data)
         ratings_ref.document(generate_code(10)).set(data)
-        return "rating received!"
+        return "Rating received!"
     else:
         return "what are you doing here?"
 
