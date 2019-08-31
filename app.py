@@ -2,6 +2,8 @@
 from flask import Flask, render_template, redirect, render_template, request, jsonify, Response
 import os
 import flask
+from bs4 import BeautifulSoup
+import requests
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -67,6 +69,10 @@ debug_menu={
   }
 }
 
+def first_name(name):
+    l = name.split(" ")
+    return l[0]
+
 def number_to_color(number):
     number = int(number)
     list = ["red", "orange", "yellow", "#bff542", "#0fd422"]
@@ -118,9 +124,6 @@ def clear_ratings():
         return delete_collection(ratings_ref, 30)
 # scheduler.add_job(func=print_date_time, trigger="interval", seconds=3)
 #utc = est + 4
-scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
-scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
-scheduler.start()
 
 def generate_code(n):
     return ''.join([random.choice('0123456789ABCDEFGHIKJLMNOPQRSTUVWXYZ') for _ in range(n)])
@@ -151,29 +154,20 @@ def credentials_to_dict(credentials):
           'client_secret': credentials.client_secret,
           'scopes': credentials.scopes}
 
-def update_daily_menu(menu):
-    docs = daily_menu_ref.limit(5).stream()
-    for doc in docs:
-        print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
-        doc.reference.delete()
-    daily_menu_ref.document(generate_code(5)).set(menu)
-    return "ok"
-
-def first_name(name):
-    l = name.split(" ")
-    return l[0]
-
 
 #debug runs:
-update_meals_cron()
-update_daily_menu(debug_menu)
+
+@app.route('/get_daily_menu')
+def get_daily_menu():
+    return get_menu(os.environ["SCRAPER_KEY"])
 
 @app.before_request
 def before_request():
-    if request.url.startswith('http://'):
-        url = request.url.replace('http://', 'https://', 1)
-        code = 301
-        return redirect(url, code=code)
+    if(not request.url.startswith('http://127')):
+        if request.url.startswith('http://'):
+            url = request.url.replace('http://', 'https://', 1)
+            code = 301
+            return redirect(url, code=code)
 
 @app.route("/update_meals_all")
 def update():
@@ -275,6 +269,95 @@ def all_ratings():
 
 app.debug=True
 app.secret_key = os.environ['SECRET_KEY']
+
+
+def get_menu():
+
+    payload={'key': os.environ["SCRAPER_KEY"], 'url':
+    'https://www.lawrenceville.org/campus-life/dining'}
+
+    resp = requests.get('http://api.scraperapi.com', params=payload)
+    soup=BeautifulSoup(resp.text,'html.parser')
+    # print soup
+
+    items=soup.findAll("div",{"class":"event-detail"})
+    items_list = []
+    final_menu = {}
+
+
+    for item in items:
+        items_list.append(item.get_text())
+
+    for i in range(len(items_list)):
+        items_list[i] = parse_meal(split_meal(items_list[i]))
+
+    for meal in items_list:
+        final_menu[meal["type"]]={
+            "date":meal["date"],
+            "type":meal["type"],
+            "title":meal["type"].capitalize() + " - " + meal["date"],
+            "items":meal["items"]
+        }
+
+    return final_menu
+
+def split_meal(item):
+    item = item
+    underscore_indices = []
+
+    for i in range(0, len(item)-1):
+        if item[i].isalpha() and item[i+1].isalpha():
+            if not(item[i].isupper()) and item[i+1].isupper():
+                underscore_indices.append(i)
+
+    for i in range(len(underscore_indices)):
+        item = item[:underscore_indices[i]+i+1] + '\n' + item[underscore_indices[i]+i+1:]
+
+    return item
+
+def parse_meal(meal):
+    date = ""
+    n_indices = []
+    space_indices = []
+    for i in range(len(meal)):
+        if meal[i] == "\n":
+            n_indices.append(i)
+        if meal[i] == " ":
+            space_indices.append(i)
+
+    type = meal[n_indices[0]+1:n_indices[1]]
+    date = datetime.strptime(meal[n_indices[2]+1:space_indices[0]], "%m/%d/%Y").strftime('%A %B %d')
+    meal = meal[space_indices[2]:].split('\n')
+    del meal[0]
+    del meal[-1]
+    no_words = ["bar", "fruit", "yogurt", "yogurt", "muffins", "dessert"]
+    i=0
+    while i < len(meal):
+        for no_word in no_words:
+            if no_word in meal[i].lower():
+                del meal[i]
+                i -= 1
+        i += 1
+
+    return {"type":type.lower(), "date":date, "items":meal}
+
+def update_daily_menu():
+    docs = daily_menu_ref.limit(5).stream()
+    for doc in docs:
+        print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
+        doc.reference.delete()
+    daily_menu_ref.document(generate_code(5)).set(get_menu())
+    return "ok"
+
+
+
+scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
+scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
+scheduler.add_job(update_daily_menu, 'cron', hour=8, minute=0, second=0)
+scheduler.start()
+
+update_daily_menu()
+
 
 if __name__ == '__main__':
     app.config['SESSION_TYPE'] = 'filesystem'
