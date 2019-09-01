@@ -368,7 +368,7 @@ def update_daily_menu():
 
 scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
 scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
-scheduler.add_job(update_daily_menu, 'cron', hour=8, minute=0, second=0)
+scheduler.add_job(update_daily_menu, 'interval', hour=3, minute=0, second=0)
 scheduler.start()
 #
 # debug:
