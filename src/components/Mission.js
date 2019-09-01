@@ -14,7 +14,7 @@ export default class Mission extends Component {
       RIFT is sleek, fast and convenient. Each meal rating takes less than a minute and the dining hall staff can see your feedback instantly. It is important that you try to give as much feedback as possible and that you make your rating a constructive criticism rather than talk about how the food is terrible.
       </p>
       <p>
-      If you encounter any problems with the software or if you have suggestions about the website, feel free to contact Alper Canberk at acanberk21@lawrenceville.org or Jasper Zhu at jzhu21@lawrenceville.org
+      If you encounter any problems with the software or if you have suggestions about the website, feel free to contact Alper Canberk at acanberk21@lawrenceville.org
       </p>
       </Container>
     )
