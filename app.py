@@ -361,9 +361,6 @@ def update_daily_menu():
     daily_menu_ref.document(generate_code(5)).set(get_menu())
     return "ok"
 
-def cron_check():
-
-
 
 scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
 scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
