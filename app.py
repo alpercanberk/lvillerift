@@ -282,10 +282,6 @@ def all_ratings():
     return str(gtd(ratings_ref.stream()))
 
 
-app.debug=True
-app.secret_key = os.environ['SECRET_KEY']
-
-
 def get_menu():
 
     payload={'key': os.environ["SCRAPER_KEY"], 'url':
@@ -371,6 +367,11 @@ scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
 scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
 scheduler.add_job(update_daily_menu, 'interval', hours=3)
 scheduler.start()
+
+
+app.debug=True
+app.secret_key = os.environ['SECRET_KEY']
+
 #
 # debug:
 # update_daily_menu()
