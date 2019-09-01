@@ -358,6 +358,7 @@ def parse_meal(meal):
 
 def update_daily_menu():
     docs = daily_menu_ref.limit(5).stream()
+    print("docs gotten")
     for doc in docs:
         print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
         doc.reference.delete()
@@ -368,7 +369,7 @@ def update_daily_menu():
 
 scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
 scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
-scheduler.add_job(update_daily_menu, 'interval', hour=3, minute=0, second=0)
+scheduler.add_job(update_daily_menu, 'interval', hours=3)
 scheduler.start()
 #
 # debug:
