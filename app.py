@@ -353,13 +353,15 @@ def parse_meal(meal):
     return {"type":type.lower(), "date":date, "items":meal}
 
 def update_daily_menu():
+    print("Updating daily menu...")
     docs = daily_menu_ref.limit(5).stream()
-    print("docs gotten")
     for doc in docs:
         print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
         doc.reference.delete()
     daily_menu_ref.document(generate_code(5)).set(get_menu())
     return "ok"
+
+def cron_check():
 
 
 
