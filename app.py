@@ -338,7 +338,7 @@ def parse_meal(meal):
 
     type = meal[n_indices[0]+1:n_indices[1]]
     date = datetime.strptime(meal[n_indices[2]+1:space_indices[0]], "%m/%d/%Y").strftime('%A %B %d')
-    meal = meal[space_indices[2]:].split('\n')
+    meal = meal[space_indices[2]:].replace("&amp;","&").split('\n')
     del meal[0]
     del meal[-1]
     no_words = ["bar", "fruit", "yogurt", "yogurt", "muffins", "dessert"]
@@ -373,7 +373,7 @@ app.secret_key = os.environ['SECRET_KEY']
 
 #
 # debug:
-# update_daily_menu()
+update_daily_menu()
 
 
 if __name__ == '__main__':
