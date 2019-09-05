@@ -176,6 +176,7 @@ def update():
 @app.route("/")
 def index():
     menu = gtd(daily_menu_ref.stream())[0]
+    print(menu)
     if(flask.session):
         if('credentials' in flask.session):
             if(str(flask.session["user_info"]["email"]) in admin_list):
@@ -302,12 +303,13 @@ def get_menu():
     for i in range(len(items_list)):
         items_list[i] = parse_meal(split_meal(items_list[i]))
 
+
     for meal in items_list:
         final_menu[meal["type"]]={
             "date":meal["date"],
             "type":meal["type"],
             "title":meal["type"].capitalize() + " - " + meal["date"],
-            "items":meal["items"]
+            "items":[item.replace("&", "and") for item in meal["items"]]
         }
 
     return final_menu
@@ -338,7 +340,7 @@ def parse_meal(meal):
 
     type = meal[n_indices[0]+1:n_indices[1]]
     date = datetime.strptime(meal[n_indices[2]+1:space_indices[0]], "%m/%d/%Y").strftime('%A %B %d')
-    meal = meal[space_indices[2]:].replace("&amp;","&").split('\n')
+    meal = meal[space_indices[2]:].split('\n')
     del meal[0]
     del meal[-1]
     no_words = ["bar", "fruit", "yogurt", "yogurt", "muffins", "dessert"]

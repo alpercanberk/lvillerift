@@ -216,6 +216,7 @@ class App extends Component{
           <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
           <ListGroup variant="flush">
             {menu[meal_type].items.map((item) => {
+                console.log(item)
                 return(
                 <ListGroup.Item style={{"paddingTop":20}}>
                 <div><h5 class="food_title">{item}</h5>
