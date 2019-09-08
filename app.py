@@ -178,7 +178,7 @@ def index():
     menu = gtd(daily_menu_ref.stream())[0]
     print(menu)
     if(flask.session):
-        if('credentials' in flask.session):
+        if('credentials' in flask.session and 'user_info' in flask.session):
             if(str(flask.session["user_info"]["email"]) in admin_list):
                 return render_template("all_ratings.html", ratings_list=(gtd(ratings_ref.stream())), current_host= flask.request.url_root)
             if("@lawrenceville.org" in flask.session["user_info"]["email"]):
@@ -208,18 +208,18 @@ def index():
                                )
 
         #only for debug!! find a way to get rid of this as well.
-        else:
-            flask.session["user_info"]={
-                "email":"acanberk21@lawrenceville.org",
-                "name":"Alper Canberk"
-            }
-
-            return render_template('index.html',
-                                   user_email = "acanberk21@lawrenceville.org",
-                                   user_name = "Alper",
-                                   current_host= flask.request.url_root,
-                                   menu = menu
-                                   )
+        # else:
+        #     flask.session["user_info"]={
+        #         "email":"acanberk21@lawrenceville.org",
+        #         "name":"Alper Canberk"
+        #     }
+        #
+        #     return render_template('index.html',
+        #                            user_email = "acanberk21@lawrenceville.org",
+        #                            user_name = "Alper",
+        #                            current_host= flask.request.url_root,
+        #                            menu = menu
+        #                            )
 
 @app.route("/users")
 def users():
