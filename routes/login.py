@@ -78,6 +78,7 @@ def oauth2callback():
 @routes.route('/logout')
 def logout():
     # remove the username from the session if it's there
+    print("someone logging out")
     flask.session.pop('credentials', None)
     flask.session.pop('state', None)
     flask.session.pop('user_info', None)
