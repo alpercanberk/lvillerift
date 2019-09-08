@@ -261,6 +261,11 @@ def completed_meals():
                 "lunch":found_user_dict["lunch"],
                 "dinner":found_user_dict["dinner"]
                 }
+    return{
+        "breakfast":False,
+        "lunch":False,
+        "dinner":False
+    }
     #debug stuff
     # else:
     #     return {
