@@ -38,9 +38,45 @@
   margin-top:12px !important;
 }
 
+.filled-option{
+  color:white;
+  border:1px solid white;
+  background-color:black;
+  border-radius:3px;
+  margin:2px;
+  padding:3px;
+}
+
+.unfilled-option{
+  border:1px solid black;
+  border-radius:3px;
+  margin:2px;
+  padding:3px;
+}
+
+.rating-boxes{
+  border:1px !important;
+}
+
 .already-rated{
   margin:17px;
   color:#BA1A26 !important;
+}
+
+.accordion{
+  margin:10px;
+}
+
+.submit-button{
+  margin:10px auto;
+  float:right;
+  border-radius:10px !important;
+}
+
+.btn-primary{
+  background-color:#BA1A26 !important;
+  border:0px white !important;
+  color:white;
 }
 
 .menu-title{

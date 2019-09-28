@@ -1,7 +1,8 @@
 import React, {Component}  from 'react';
 import Rating from './components/Rating.js'
 import Mission from './components/Mission.js'
-import FullRating from './components/FullRating.js'
+// import FullRating from './components/FullRating.js'
+import NewRating from './components/NewRating.js'
 
 import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, ListGroup } from 'react-bootstrap';
 import './App.css';
@@ -20,31 +21,34 @@ var uploadURL = window.CURRENT_HOST + "complete_meal";
 var completedMealsURL = window.CURRENT_HOST + "completed_meals";
 var rateURL = window.CURRENT_HOST + "receive_rating";
 
-console.log(window.menu.replace(new RegExp('u&#39;', 'g'),'').replace(new RegExp('&#39;', 'g'),''));
-var menu = JSON.parse(window.menu.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"'))
-console.log("menu:")
-console.log(menu)
+
+// var menu = JSON.parse(window.menu.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"'))
+
 var meal_types = ["breakfast", "lunch", "dinner"]
-// var menu={
-//   "breakfast":{
-//     "date":"August 19",
-//     "title":"Breakfast - August 19",
-//     "items":["Belgium Waffles", "Homefried Potatoes", "Sausage Links", "Assorted Pastries"],
-//     "type":"breakfast"
-//   },
-//   "lunch":{
-//     "date":"August 19",
-//     "title":"Lunch - August 19",
-//     "items":["French Onion Soup", "Mako Shark Tacos", "Kale Sautee", "Ice Cream"],
-//     "type":"breakfast"
-//   },
-//   "dinner":{
-//     "date":"August 19",
-//     "title":"Dinner - August 19",
-//     "items":["Flank Steak", "Mashed Potatoes", "Seasonal Vegetables", "Ice Cream"],
-//     "type":"breakfast"
-//   }
-// }
+
+var menu = {
+  "breakfast":{
+    "date":"August 19",
+    "time":0,
+    "title":"Breakfast - August 19",
+    "items":["Belgium Waffles", "Homefried Potatoes", "Sausage Links", "Assorted Pastries"],
+    "type":"breakfast"
+  },
+  "lunch":{
+    "date":"August 19",
+    "time":0,
+    "title":"Lunch - August 19",
+    "items":["French Onion Soup", "Mako Shark Tacos", "Kale Sautee", "Ice Cream"],
+    "type":"breakfast"
+  },
+  "dinner":{
+    "date":"August 19",
+    "time":0,
+    "title":"Dinner - August 19",
+    "items":["Flank Steak", "Mashed Potatoes", "Seasonal Vegetables", "Ice Cream"],
+    "type":"breakfast"
+  }
+}
 
 class App extends Component{
 
@@ -208,37 +212,37 @@ class App extends Component{
   renderRating(meal_types){
     return(
       <div>
-      {meal_types.map((meal_type) => {
-        console.log(menu)
-        console.log(meal_type)
-        return(
-          <Card style={{"marginLeft":30, "marginRight":30, "marginTop":30}}>
-          <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
-          <ListGroup variant="flush">
-            {menu[meal_type].items.map((item) => {
-                console.log(item)
-                return(
-                <ListGroup.Item style={{"paddingTop":20}}>
-                <div><h5 class="food_title">{item}</h5>
-                <Rating
-                title={menu[meal_type].title}
-                meal_length={menu[meal_type].items.length}
-                name={menu[meal_type].name}
-                type={menu[meal_type].type}
-                submitDetector={this.state.submit_detector}
-                collect_function={this.collectInputData}
-                name={item}
-                user={window.user_email}
-                is_complete={this.state.completed[this.mealToIndex(menu[meal_type].type)]}
-                />
-                </div>
-                </ListGroup.Item>)
-            })}
-          </ListGroup>
-          {this.renderSubmitRating(menu[meal_type].type)}
-          </Card>
-        )
-      })}
+        {meal_types.map((meal_type) => {
+          return(
+            <Card style={{"marginLeft":30, "marginRight":30, "marginTop":30}}>
+              <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
+              <NewRating meal={menu[meal_type]} />
+
+            </Card>
+          )
+          // <ListGroup variant="flush">
+          //   {menu[meal_type].items.map((item) => {
+          //     console.log(item)
+          //     return(
+          //       <ListGroup.Item style={{"paddingTop":20}}>
+          //         <div><h5 class="food_title">{item}</h5>
+          //           <Rating
+          //             title={menu[meal_type].title}
+          //             meal_length={menu[meal_type].items.length}
+          //             name={menu[meal_type].name}
+          //             type={menu[meal_type].type}
+          //             submitDetector={this.state.submit_detector}
+          //             collect_function={this.collectInputData}
+          //             name={item}
+          //             user={window.user_email}
+          //             is_complete={this.state.completed[this.mealToIndex(menu[meal_type].type)]}
+          //           />
+          //         </div>
+          //       </ListGroup.Item>)
+          //   })}
+          // </ListGroup>
+          // {this.renderSubmitRating(menu[meal_type].type)}
+        })}
       </div>
     )
   }
@@ -259,14 +263,14 @@ class App extends Component{
           />
           <Navbar bg="light" expand="lg" color="red">
             <Navbar.Brand href="#home">
-              <img src={Logo} alt="website_logo" class="logo"/>
+              <span style={{"font-size":30}}>LIFE</span>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="mr-auto">
                 <Nav.Link href="#home">Home</Nav.Link>
                 <Nav.Link href="#mission">Mission</Nav.Link>
-                <NavDropdown title="Past Ratings" id="basic-nav-dropdown">
+                <NavDropdown title="Statistics" id="basic-nav-dropdown">
                   <NavDropdown.Item href="#action/3.1">Work</NavDropdown.Item>
                   <NavDropdown.Item href="#action/3.2">In</NavDropdown.Item>
                   <NavDropdown.Item href="#action/3.3">Progress</NavDropdown.Item>

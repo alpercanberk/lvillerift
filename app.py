@@ -13,7 +13,6 @@ import random
 
 from routes import *
 # from firebase_refs import *
-
 import ast
 
 import firebase_admin
@@ -24,6 +23,8 @@ import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 from pkg_resources import resource_filename
+
+from flask_sqlalchemy import SQLAlchemy
 
 import time
 import atexit
@@ -36,11 +37,18 @@ firebase_credentials = json.loads(os.environ['FIREBASE_CREDENTIALS'])
 cred = credentials.Certificate(firebase_credentials)
 
 firebase_admin.initialize_app(cred)
-db = firestore.client()
+firebase_db = firestore.client()
 
-users_ref = db.collection('users')
-ratings_ref = db.collection('basic_ratings')
-daily_menu_ref = db.collection('daily_menu')
+users_ref = firebase_db.collection('users')
+ratings_ref = firebase_db.collection('basic_ratings')
+daily_menu_ref = firebase_db.collection('daily_menu')
+
+app = Flask(__name__)
+app.config.from_object(os.environ['APP_SETTINGS'])
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+from models import Rating
 
 app = Flask("lvillerift", static_folder="build/static", template_folder="build")
 app.register_blueprint(routes)
@@ -279,7 +287,7 @@ def receive_rating():
     if request.method == 'POST':
         print("Receieved a rating!")
         data = json.loads(request.data)
-        ratings_ref.document(generate_code(10)).set(data)
+        print(data)
         return "Rating received!"
     else:
         return "what are you doing here?"
