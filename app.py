@@ -78,24 +78,6 @@ app.jinja_env.globals.update(number_to_color=number_to_color)
 app.jinja_env.globals.update(ratings_to_color=ratings_to_color)
 
 
-def update_meals_cron():
-    docs = users_ref.limit(40).stream()
-    updated = 0
-
-    for doc in docs:
-        print(u'Updating doc {} => {}'.format(doc.id, doc.to_dict()))
-        users_ref.document(doc.id).update(
-            {
-                "breakfast":False,
-                "lunch":False,
-                "dinner":False
-            }
-        )
-        updated = updated + 1
-
-    if updated >= 30:
-        return delete_collection(coll_ref, 30)
-
 # def clear_ratings():
 #     docs = ratings_ref.limit(40).stream()
 #     deleted = 0
@@ -155,10 +137,6 @@ def get_daily_menu():
 #                     code = 301
 #                     return redirect(url, code=code)
 
-@app.route("/update_meals_all")
-def update():
-    update_meals_cron()
-    return "ok"
 
 @app.route("/")
 def index():
@@ -179,7 +157,8 @@ def index():
                 if not user:
                     create_new_user(str(flask.session['user_info']['name']), str(flask.session['user_info']['email']))
 
-
+                ratings = [rating.serialize() for rating in Rating.query.all()]
+                print(ratings)
 
                 return render_template('index.html',
                                        user_email = str(flask.session['user_info']['email']),
@@ -187,7 +166,8 @@ def index():
                                        current_host = flask.request.url_root,
                                        rated_meals = rated_meals,
                                        menu = menu,
-                                       admin = 1
+                                       admin = 1,
+                                       ratings = ratings
                                        )
 
             if("@lawrenceville.org" in flask.session["user_info"]["email"]):
@@ -230,33 +210,6 @@ def index():
     #                                menu = menu
     #                                )
 
-@app.route("/users")
-def users():
-    return str(gtd(users_ref.stream()))
-
-
-@app.route('/complete_meal', methods=['POST'])
-def add_later_user():
-    if request.method == 'POST':
-        data = json.loads(request.data)
-        user =  data["user"]
-        meal_type = data["complete_type"]
-        found_user = users_ref.where('email', '==', user)
-        found_user_dict = gtd(found_user.stream())
-        if(found_user_dict):
-            if(not found_user_dict[0][meal_type]):
-                user_id = found_user_dict[0]["id"]
-                users_ref.document(user_id).update({
-                    meal_type: True
-                })
-                return "Rating successful!"
-            else:
-                return "You can only rate a meal once per day."
-
-        else:
-            return "nope"
-    else:
-        return "whacchu doin?"
 
 
 @app.route('/receive_rating', methods=['POST'])
@@ -296,6 +249,19 @@ def receive_rating():
 @app.route('/all_ratings', methods=['GET'])
 def all_ratings():
     return get_all_ratings()
+
+@app.route('/delete_rating', methods=['POST'])
+def delete_rating():
+    print(json.loads(request.data.decode("utf-8"))["id"])
+    if request.method == "POST":
+        data = json.loads(request.data.decode("utf-8"))
+        rating = Rating.query.filter_by(id=data["id"]).first()
+        if(rating):
+            db.session.delete(rating)
+            db.session.commit()
+    return "Deleted"
+
+
 
 def get_all_ratings():
     print("Request to all ratings >>>>>>")
@@ -391,18 +357,21 @@ def update_daily_menu():
     print(">>>>>>>>>-----<<<<<<")
     new_menu = DailyMenu(menu_received)
     db.session.add(new_menu)
-
-    all_users = User.query.all()
-    for user in all_users:
-        user.rated_meals = "{}"
     db.session.commit()
 
     return "ok"
 
+def refresh_daily_ratings():
+    all_users = User.query.all()
+    for user in all_users:
+        user.rated_meals = "{}"
+    db.session.commit()
+    return "ok"
 
-scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
+
 # scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
 scheduler.add_job(update_daily_menu, 'interval', hours=3)
+scheduler.add_job(refresh_daily_ratings, 'interval', hours=12)
 scheduler.start()
 
 

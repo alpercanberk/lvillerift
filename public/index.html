@@ -36,42 +36,8 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-    var ratings = JSON.stringify([
-      {
-      "comment": "",
-      "cooking_time": 3,
-      "email": "acanberk21@lawrenceville.org",
-      "id": 4,
-      "saltiness": 1,
-      "spice": 3,
-      "sweetness": 2,
-      "time": 1570042507724
-      },
-      {
-      "comment": "",
-      "cooking_time": 3,
-      "email": "acanberk21@lawrenceville.org",
-      "id": 5,
-      "saltiness": 1,
-      "spice": 3,
-      "sweetness": 2,
-      "time": 1570042537546
-      },
-      {
-      "comment": "",
-      "cooking_time": 2,
-      "email": "acanberk21@lawrenceville.org",
-      "id": 6,
-      "saltiness": 2,
-      "spice": 3,
-      "sweetness": 1,
-      "time": 1570042668813
-      },
-    ])
 
-    if("{{ratings}}"){
-      ratings = "{{ratings}}"
-    }
+    var ratings = "{{ratings}}"
 
     var user_email = "user@lawrenceville.org"
     if("{{ user_email }}"){

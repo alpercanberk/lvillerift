@@ -31,6 +31,7 @@ class Rating(db.Model):
     def serialize(self):
         return {
             'id':self.id,
+            'meal':self.meal,
             'email':self.email,
             'saltiness':self.saltiness,
             'spice':self.spice,

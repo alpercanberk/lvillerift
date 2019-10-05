@@ -122,6 +122,20 @@
   margin:10px !important;
 }
 
+.rating-comment{
+  margin:5px;
+  border-radius:3px;
+  padding:10px;
+  border: 1px solid black;
+  margin-bottom:20px;
+}
+
+.rating-display{
+  margin:1px;
+  padding:5px;
+  border-radius:3px;
+}
+
 .logo{
   height:60px;
   width:180px;
