@@ -28,7 +28,8 @@ import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 
 admin_list = [
-    "alper.tu.canberk@gmail.com"
+    "acanberk21@gmail.com",
+    "atokarski20@lawrenceville.org"
 ]
 #
 # firebase_credentials = json.loads(os.environ['FIREBASE_CREDENTIALS'])
