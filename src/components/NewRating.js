@@ -64,7 +64,12 @@ class NewRating extends Component{
     var new_ratings = this.state.ratings
     for(var j=0;j<3;j++){
       if(j == index){
-        new_ratings[findIndex(rating_type, rating_types)][j] = 1
+        if(new_ratings[findIndex(rating_type, rating_types)][j] == 1){
+          new_ratings[findIndex(rating_type, rating_types)][j] = 0
+        }
+        else{
+          new_ratings[findIndex(rating_type, rating_types)][j] = 1
+        }
       }
       else{
         new_ratings[findIndex(rating_type, rating_types)][j] = 0
@@ -134,7 +139,7 @@ class NewRating extends Component{
 
                             {['Salt','Spice','Sweetness','Cooking Time'].map((rating_type)=>{
                               return(
-                                <Col sm><h6>{rating_type}</h6>
+                                <Col sm class="rating-col"><h5 style={{"textAlign":"center"}}>{rating_type}</h5>
                                   <Form>
                                     <div
                                       onClick={() => {this.onRatingClick(rating_type, 0)}}
@@ -160,7 +165,7 @@ class NewRating extends Component{
                         </div>
                         <div style={{"marginTop":10}}>
                           <Form>
-                            <Form.Label>Additional Comments</Form.Label>
+                            <Form.Label style={{"fontWeight":"bold"}}>Additional Comments</Form.Label>
                             <Form.Control as="textarea" rows="2" onChange={this.onCommentChange} />
                           </Form>
                         </div>
