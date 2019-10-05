@@ -38,6 +38,38 @@
   margin-top:12px !important;
 }
 
+.col-sm{
+  margin:10px 0px !important;
+}
+
+.accordion>.card .card-header {
+  background-color:white !important;
+  border:none !important;
+  width:100%;
+  padding:1px;
+}
+
+.accordion>.card {
+  border:none !important;
+  padding:3px;
+}
+
+.list-group-flush .list-group-item {
+    border-right: 0px white !important;
+    border-left: 0px white !important;
+    border-radius: 0px white !important;
+}
+
+.list-group .list-group-item {
+    border-top: 0.5px gray black !important;
+    padding:0px !important;
+}
+
+.card-header > .btn{
+  width:100% !important;
+  padding:20px;
+}
+
 .filled-option{
   color:white;
   border:1px solid white;
@@ -64,7 +96,9 @@
 }
 
 .accordion{
-  margin:10px;
+  margin:3px;
+  padding:3px;
+
 }
 
 .submit-button{

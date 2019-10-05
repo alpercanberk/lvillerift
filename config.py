@@ -7,7 +7,7 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ['SECRET_KEY']
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/life'
 
 class ProductionConfig(Config):
     DEBUG = False

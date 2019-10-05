@@ -1,8 +1,9 @@
 import React, {Component}  from 'react';
-import Rating from './components/Rating.js'
-import Mission from './components/Mission.js'
+import Mission from './components/Mission.js';
 // import FullRating from './components/FullRating.js'
-import NewRating from './components/NewRating.js'
+import NewRating from './components/NewRating.js';
+import MenuDisplay from './components/MenuDisplay.js';
+import AdminPage from './components/AdminPage.js';
 
 import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, ListGroup } from 'react-bootstrap';
 import './App.css';
@@ -21,10 +22,11 @@ var uploadURL = window.CURRENT_HOST + "complete_meal";
 var completedMealsURL = window.CURRENT_HOST + "completed_meals";
 var rateURL = window.CURRENT_HOST + "receive_rating";
 
-
-// var menu = JSON.parse(window.menu.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"'))
+var is_admin = window.admin
 
 var meal_types = ["breakfast", "lunch", "dinner"]
+
+
 
 var menu = {
   "breakfast":{
@@ -50,6 +52,10 @@ var menu = {
   }
 }
 
+if(window.menu.length > 100){
+  menu = JSON.parse(window.menu.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"'))
+}
+
 class App extends Component{
 
   constructor(props){
@@ -60,33 +66,6 @@ class App extends Component{
       ready_to_send:false,
       completed:[true,true,true]
     }
-    this.submitRating = this.submitRating.bind(this)
-    this.collectInputData = this.collectInputData.bind(this)
-    this.renderRating = this.renderRating.bind(this)
-  }
-
-  componentWillMount(){
-    console.log("Completed meals url:")
-    console.log(completedMealsURL)
-    axios.get(completedMealsURL).then(
-      (response)=>{
-        console.log("Component will mount!")
-        console.log(response)
-        var new_completed = this.state.completed
-        if(!response.data.breakfast){
-          new_completed[0]=false
-        }
-        if(!response.data.lunch){
-          new_completed[1]=false
-        }
-        if(!response.data.dinner){
-          new_completed[2]=false
-        }
-        this.setState({
-          completed:new_completed
-        })
-      }
-    )
   }
 
   renderSignInButton(){
@@ -118,131 +97,29 @@ class App extends Component{
     }
   }
 
-  renderSubmitRating(type){
-    var button = ""
-    if(window.user_email && !this.state.completed[this.mealToIndex(type)]){
-      button = <Button onClick={()=>{this.submitRating(type)}} style={{"backgroundColor":"#BA1A26", "color":"white", "borderColor":"#BA1A26", "height":40, "width":200, "margin":"5px auto"}}><h5>Submit Rating</h5></Button>
-    }
-    else if(window.user_email && this.state.completed[this.mealToIndex(type)]){
-      button = <p className="already-rated">You have already rated this meal today.</p>
-    }
-    return button
-  }
-
-  mealToIndex(type){
-    if(type == "breakfast"){
-      return 0
-    }
-    if(type == "lunch"){
-      return 1
-    }
-    if(type == "dinner"){
-      return 2
-    }
-  }
-
-  submitRating(type){
-
-    this.setState({ratings_input:[]});
-    this.setState({ready_to_send:false})
-
-    if(!this.state.completed[this.mealToIndex(type)]){
-      console.log("rating!")
-      var new_submit = this.state.submit_detector
-      var type_constant = 0
-      if(type=="breakfast"){
-        type_constant = 1
-      }
-      else if(type=="lunch"){
-        type_constant = 2
-      }
-      else if(type=="dinner"){
-        type_constant = 3
-      }
-      new_submit = new_submit + type_constant
-
-      this.setState({submit_detector:new_submit});
-    }
-    else{
-      console.log("Bruh you already rated this!")
-    }
-
-    axios
-          .post(uploadURL, {
-            user: window.user_email,
-            complete_type:type
-          })
-          .then((response) => {
-            console.log(response)
-            alert(response.data);
-            if(response.data = "Rating successful!"){
-              console.log("rating successful! - confirmed")
-              var new_completed = this.state.completed
-              new_completed[this.mealToIndex(type)] = true
-              this.setState({completed: new_completed})
-            }
-          });
-  }
-
-
-  collectInputData(input, meal_length){
-    var inputs_processing = this.state.ratings_input
-    inputs_processing.push(input)
-    this.setState({ratings_input:inputs_processing})
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot){
-    console.log("Component did update!")
-    console.log(this.state)
-    if(prevState.ratings_input != this.state.ratings_input){
-      if(this.state.ratings_input.length > 0){
-        console.log("ready! make request!!");
-        axios.post(rateURL, {
-          user_name: window.user_name,
-          user_email: window.user_email,
-          ratings: this.state.ratings_input
-        })
-      }
-      else{
-        console.log("nope, you can't rate this anymore")
-      }
-    }
-  }
-
   renderRating(meal_types){
     return(
       <div>
-        {meal_types.map((meal_type) => {
-          return(
-            <Card style={{"marginLeft":30, "marginRight":30, "marginTop":30}}>
-              <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
-              <NewRating meal={menu[meal_type]} />
+        {
+          meal_types.map((meal_type) => {
+            return(
 
-            </Card>
-          )
-          // <ListGroup variant="flush">
-          //   {menu[meal_type].items.map((item) => {
-          //     console.log(item)
-          //     return(
-          //       <ListGroup.Item style={{"paddingTop":20}}>
-          //         <div><h5 class="food_title">{item}</h5>
-          //           <Rating
-          //             title={menu[meal_type].title}
-          //             meal_length={menu[meal_type].items.length}
-          //             name={menu[meal_type].name}
-          //             type={menu[meal_type].type}
-          //             submitDetector={this.state.submit_detector}
-          //             collect_function={this.collectInputData}
-          //             name={item}
-          //             user={window.user_email}
-          //             is_complete={this.state.completed[this.mealToIndex(menu[meal_type].type)]}
-          //           />
-          //         </div>
-          //       </ListGroup.Item>)
-          //   })}
-          // </ListGroup>
-          // {this.renderSubmitRating(menu[meal_type].type)}
-        })}
+              <Card style={{"marginLeft":30, "marginRight":30, "marginTop":30}}>
+                <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
+                <ListGroup variant="flush">
+                  {menu[meal_type].items.map((item) => {
+                    if(window.user_name){
+                      return(<NewRating item={item}/>)
+                    }
+                    else{
+                      return(<MenuDisplay item={item}/>)
+                    }
+                  })}
+                </ListGroup>
+              </Card>
+
+            )
+          })}
       </div>
     )
   }
@@ -252,7 +129,7 @@ class App extends Component{
   }
 
   render(){
-    return (
+      return (
       <div className="App">
         <HashRouter>
           <link
@@ -277,12 +154,14 @@ class App extends Component{
                   <NavDropdown.Divider />
                   <NavDropdown.Item href="#action/3.4">Check later</NavDropdown.Item>
                 </NavDropdown>
+                {window.admin ? <Nav.Link href="#admin">Admin Page</Nav.Link>:<div/>}
               </Nav>
               {this.renderSignInButton()}
             </Navbar.Collapse>
           </Navbar>
           <Route exact path="/" render={() => <Redirect to="/home" />} />
           <Route path="/mission" component={Mission} />
+          <Route path="/admin" component={AdminPage} />
           <Route path="/home" render={() => <div>{this.renderGreeting()}{this.renderRating(meal_types)}</div>}/>
         </HashRouter>
       </div>

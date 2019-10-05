@@ -8,6 +8,14 @@ var inner_rating_style={
 
 var rateURL = window.CURRENT_HOST + "receive_rating";
 
+var rated_meals = ""
+//
+if(window.rated_meals.length > 20){
+  rated_meals = JSON.parse(window.rated_meals.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"'));
+}
+
+console.log(rated_meals)
+
 var rating_types = ["Salt", "Spice", "Sweetness", "Cooking Time"]
 
 var rating_object={
@@ -25,17 +33,28 @@ function findIndex(item, list){
   }
 }
 
+function parseRatings(item, list){
+  for(var i=0;i<list.length;i++){
+    if(list[i] == item){
+      return (i + 1)
+    }
+  }
+  return 0
+}
+
 class NewRating extends Component{
   constructor(props){
     super(props)
     this.state={
       ratings:[[0,0,0],[0,0,0],[0,0,0],[0,0,0]],
-      additionalRating:""
+      additionalRating:"",
+      active: false,
     }
     this.onRatingClick = this.onRatingClick.bind(this)
     this.onCommentChange = this.onCommentChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
-    // this.onAddRatingChange = this.onAddRatingChange.bind(this)
+    this.updateActive = this.updateActive.bind(this)
+    this.renderActive = this.renderActive.bind(this)
   }
 
   onRatingClick(rating_type, index){
@@ -59,43 +78,63 @@ class NewRating extends Component{
     this.setState({additionalRating:event.target.value});
   }
 
-  onSubmit(){
+  onSubmit(item){
     console.log(this.state)
     axios.post(rateURL, {
-      user_name: window.user_name,
-      user_email: window.user_email,
-      saltiness: findIndex(1, this.state.ratings[0]),
-      spice: findIndex(1,this.state.ratings[1]),
-      sweetness:findIndex(1,this.state.ratings[2]),
-      cookingTime: findIndex(1,this.state.ratings[3]),
+      name: item,
+      email: window.user_email,
+      saltiness: parseRatings(1, this.state.ratings[0]),
+      spice: parseRatings(1,this.state.ratings[1]),
+      sweetness:parseRatings(1,this.state.ratings[2]),
+      cooking_time: parseRatings(1,this.state.ratings[3]),
       comment: this.state.additionalRating,
-      time: ((new Date()).getTime())
+      time: ((new Date()).getTime()),
+    }).then((response) => {
+      alert(response.data);
+      window.location.reload();
+      this.forceUpdate();
     })
+
+  }
+
+  updateActive(){
+    var new_active = this.state.active
+    this.setState({active:!new_active})
+  }
+
+  renderActive(rated){
+    if(!rated){
+      if(this.state.active){
+        return(<span style={{"float":"right"}}>▲</span>)
+      }
+      return(<span style={{"float":"right"}}>▼</span>)
+    }
+    else{
+      return(<span style={{"float":"right", "color":"red"}}>Rated</span>)
+    }
   }
 
   render(){
     return(
-      <div>
-        <ListGroup variant="flush">
-          {this.props.meal.items.map((item) => {
-            return(
-              <ListGroup.Item style={{"paddingTop":20}}>
-                <Accordion defaultActiveKey="0" class="accordion">
+              <ListGroup.Item className="meal-list-group">
+                <Accordion defaultActiveKey="1" class="accordion meal-accordion">
                   <Card>
                     <Card.Header>
-                      <Accordion.Toggle as={Button} variant="none" eventKey="0">
-                        <h5>{item}</h5>
+                      <Accordion.Toggle as={Button} variant="none" eventKey="0" class="accordion-toggle" onClick={this.updateActive}>
+                        <h5><span style={{"float":"left"}}>{this.props.item}</span>{this.renderActive(rated_meals.includes(this.props.item))}</h5>
                       </Accordion.Toggle>
                     </Card.Header>
                     <Accordion.Collapse eventKey="0">
                       <Card.Body>
+                      {!(rated_meals.includes(this.props.item)) ? (
+                        <div>
                         <div class="rating-boxes">
 
                           <Row>
 
                             {['Salt','Spice','Sweetness','Cooking Time'].map((rating_type)=>{
                               return(
-                                <Col><h6>{rating_type}</h6>
+                                <Col sm><h6>{rating_type}</h6>
                                   <Form>
                                     <div
                                       onClick={() => {this.onRatingClick(rating_type, 0)}}
@@ -117,10 +156,8 @@ class NewRating extends Component{
                                 </Col>
                               )
                             })}
-
                           </Row>
                         </div>
-
                         <div style={{"marginTop":10}}>
                           <Form>
                             <Form.Label>Additional Comments</Form.Label>
@@ -129,38 +166,18 @@ class NewRating extends Component{
                         </div>
 
                         <div class="submit-button">
-                          <Button onClick={this.onSubmit}>Submit</Button>
+                          <Button onClick={()=>{this.onSubmit(this.props.item)}}>Submit</Button>
                         </div>
+                      </div>
+                      ):(
+                        <div>Sorry, you have already rated this meal today</div>
+                      )}
                       </Card.Body>
                     </Accordion.Collapse>
                   </Card>
-                  {
-
-                      /* <div key={`custom-inline-radio`} className="mb-3" style={{"marginLeft":10}}>
-                      {<div>
-                      <div style={{"display":"inline"}} className="stars">{this.renderRating()}</div>
-                      <select className="select" value={this.state.comment} name="descriptions" style={{"display":"inline", "fontSize":20, "marginLeft":15, "border":"1px solid black"}}
-                      onChange={(event) => {this.onSelectChange(event)}} className="rating-select">
-                      <option value="No comment">No comment</option>
-                      <option value="Perfect!">Perfect!</option>
-                      <option value="Too salty">Too salty</option>
-                      <option value="Too sweet">Too sweet</option>
-                      <option value="Overcooked">Overcooked</option>
-                      <option value="Undercooked">Undercooked</option>
-                      <option value="Lacking flavor/spice">Lacking flavor/spice</option>
-                      <option value="Bitter">Bitter</option>
-                      </select>
-                      <div><Button className="add-rating-button" onClick={this.onAddRatingClick}><p className="add-rating-button-text">+ Additional comments</p></Button></div>
-                      {this.renderAddRatingTextbox()}
-                      </div>}
-                  </div> */}
                 </Accordion>
               </ListGroup.Item>
-            )})}
-            </ListGroup>
-      </div>
-    )
-  }
-}
+            )}
+          }
 
 export default NewRating;

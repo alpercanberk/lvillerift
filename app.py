@@ -15,12 +15,8 @@ from routes import *
 # from firebase_refs import *
 import ast
 
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
 import os
 
-from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 from pkg_resources import resource_filename
 
@@ -29,52 +25,34 @@ from flask_sqlalchemy import SQLAlchemy
 import time
 import atexit
 
+from apscheduler.schedulers.background import BackgroundScheduler
+
 admin_list = [
     "alper.tu.canberk@gmail.com"
 ]
+#
+# firebase_credentials = json.loads(os.environ['FIREBASE_CREDENTIALS'])
+# cred = credentials.Certificate(firebase_credentials)
+#
+# firebase_admin.initialize_app(cred)
+# firebase_db = firestore.client()
+#
+# users_ref = firebase_db.collection('users')
+# # completed_ref = firebase_db.collection('completed')
+# daily_menu_ref = firebase_db.collection('daily_menu')
 
-firebase_credentials = json.loads(os.environ['FIREBASE_CREDENTIALS'])
-cred = credentials.Certificate(firebase_credentials)
-
-firebase_admin.initialize_app(cred)
-firebase_db = firestore.client()
-
-users_ref = firebase_db.collection('users')
-ratings_ref = firebase_db.collection('basic_ratings')
-daily_menu_ref = firebase_db.collection('daily_menu')
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from models import Rating
-
 app = Flask("lvillerift", static_folder="build/static", template_folder="build")
 app.register_blueprint(routes)
 
-scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
+from models import *
 
-debug_menu={
-  "breakfast":{
-    "date":"August 19",
-    "type":"breakfast",
-    "title":"Breakfast - August 19",
-    "items":["Belgium Waffles", "Homefried Potatoes", "Sausage Links", "Assorted Pastries"]
-  },
-  "lunch":{
-    "date":"August 19",
-    "type":"lunch",
-    "title":"Lunch - August 19",
-    "items":["French Onion Soup", "Mako Shark Tacos", "Kale Sautee", "Ice Cream"]
-  },
-  "dinner":{
-    "date":"August 19",
-    "type":"dinner",
-    "title":"Dinner - August 19",
-    "items":["BBQ Chicken", "Mashed Potatoes", "Seasonal Vegetables", "Ice Cream"]
-  }
-}
+scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
 
 def first_name(name):
     l = name.split(" ")
@@ -118,32 +96,31 @@ def update_meals_cron():
     if updated >= 30:
         return delete_collection(coll_ref, 30)
 
-def clear_ratings():
-    docs = ratings_ref.limit(40).stream()
-    deleted = 0
-
-    for doc in docs:
-        print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
-        doc.reference.delete()
-        deleted = deleted + 1
-
-    if deleted >= 30:
-        return delete_collection(ratings_ref, 30)
+# def clear_ratings():
+#     docs = ratings_ref.limit(40).stream()
+#     deleted = 0
+#
+#     for doc in docs:
+#         print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
+#         doc.reference.delete()
+#         deleted = deleted + 1
+#
+#     if deleted >= 30:
+#         return delete_collection(ratings_ref, 30)
 # scheduler.add_job(func=print_date_time, trigger="interval", seconds=3)
 #utc = est + 4
 
-def generate_code(n):
-    return ''.join([random.choice('0123456789ABCDEFGHIKJLMNOPQRSTUVWXYZ') for _ in range(n)])
-
 def create_new_user(name, email):
-    id = generate_code(8)
-    users_ref.document(id).set({
-        'email': email,
-        'name': name,
-        'breakfast': False,
-        'lunch':False,
-        'dinner':False
-    })
+    try:
+        new_user = User(name,
+                           email,
+                           )
+        db.session.add(new_user)
+        db.session.commit()
+        return "User created"
+    except Exception as e:
+        return str(e)
+
 
 def gtd(generator):
     list = []
@@ -168,13 +145,15 @@ def credentials_to_dict(credentials):
 def get_daily_menu():
     return get_menu(os.environ["SCRAPER_KEY"])
 
-@app.before_request
-def before_request():
-    if(not request.url.startswith('http://127')):
-        if request.url.startswith('http://'):
-            url = request.url.replace('http://', 'https://', 1)
-            code = 301
-            return redirect(url, code=code)
+# @app.before_request
+# def before_request():
+#     if(os.environ["FLASK_DEBUG"]):
+#         if(os.environ["FLASK_DEBUG"] != 1):
+#             if(not request.url.startswith('http://127')):
+#                 if request.url.startswith('http://'):
+#                     url = request.url.replace('http://', 'https://', 1)
+#                     code = 301
+#                     return redirect(url, code=code)
 
 @app.route("/update_meals_all")
 def update():
@@ -183,51 +162,73 @@ def update():
 
 @app.route("/")
 def index():
-    menu = gtd(daily_menu_ref.stream())[0]
-    print(menu)
+    # a = DailyMenu.query.all()
+    menu = DailyMenu.query.first().serialize()
+
     if(flask.session):
         if('credentials' in flask.session and 'user_info' in flask.session):
+
+            user = User.query.filter_by(email=flask.session["user_info"]["email"]).first()
+
+            rated_meals = []
+
+            if(user):
+                rated_meals = list((user.serialize()['rated_meals']).keys())
+
             if(str(flask.session["user_info"]["email"]) in admin_list):
-                return render_template("all_ratings.html", ratings_list=(gtd(ratings_ref.stream())), current_host= flask.request.url_root)
-            if("@lawrenceville.org" in flask.session["user_info"]["email"]):
-                if(gtd(users_ref.where('email','==',str(flask.session['user_info']['email'])).stream())):
-                    return render_template('index.html',
-                                           user_email = str(flask.session['user_info']['email']),
-                                           user_name = first_name(str(flask.session['user_info']['name'])),
-                                           current_host= flask.request.url_root,
-                                           menu = menu
-                                           )
-                else:
+                if not user:
                     create_new_user(str(flask.session['user_info']['name']), str(flask.session['user_info']['email']))
-                    return render_template('index.html',
-                                           user_email = str(flask.session['user_info']['email']),
-                                           user_name = first_name(str(flask.session['user_info']['name'])),
-                                           current_host= flask.request.url_root,
-                                           menu = menu
-                                           )
+
+
+
+                return render_template('index.html',
+                                       user_email = str(flask.session['user_info']['email']),
+                                       user_name = first_name(str(flask.session['user_info']['name'])),
+                                       current_host = flask.request.url_root,
+                                       rated_meals = rated_meals,
+                                       menu = menu,
+                                       admin = 1
+                                       )
+
+            if("@lawrenceville.org" in flask.session["user_info"]["email"]):
+
+                if not user:
+                    create_new_user(str(flask.session['user_info']['name']), str(flask.session['user_info']['email']))
+
+                print(">>>>>>>>>>>>>")
+                # print(list((user.serialize()['rated_meals']).keys()))
+
+                return render_template('index.html',
+                                       user_email = str(flask.session['user_info']['email']),
+                                       user_name = first_name(str(flask.session['user_info']['name'])),
+                                       current_host = flask.request.url_root,
+                                       rated_meals = rated_meals,
+                                       menu = menu
+                                       )
+
             else:
                 return 'You should try to sign in with your Lawrenceville email <button><a href="/logout">Go back</a></button>'
 
     else:
-        if not request.url.startswith('http://127'):
-            return render_template('index.html',
+        return render_template('index.html',
                                current_host= flask.request.url_root,
-                               menu = menu
+                               menu = menu,
+                               rated_meals = []
                                )
-
-        #only for debug!! find a way to get rid of this as well.
-        # else:
-        #     flask.session["user_info"]={
-        #         "email":"acanberk21@lawrenceville.org",
-        #         "name":"Alper Canberk"
-        #     }
-        #
-        #     return render_template('index.html',
-        #                            user_email = "acanberk21@lawrenceville.org",
-        #                            user_name = "Alper",
-        #                            current_host= flask.request.url_root,
-        #                            menu = menu
-        #                            )
+    #
+    #     # only for debug!! find a way to get rid of this as well.
+    #     else:
+    #         flask.session["user_info"]={
+    #             "email":"acanberk21@lawrenceville.org",
+    #             "name":"Alper Canberk"
+    #         }
+    #
+    #         return render_template('index.html',
+    #                                user_email = "acanberk21@lawrenceville.org",
+    #                                user_name = "Alper",
+    #                                current_host= flask.request.url_root,
+    #                                menu = menu
+    #                                )
 
 @app.route("/users")
 def users():
@@ -257,45 +258,54 @@ def add_later_user():
     else:
         return "whacchu doin?"
 
-@app.route('/completed_meals')
-def completed_meals():
-    if(credentials in flask.session):
-        if(flask.session["user_info"]):
-            user = str(flask.session["user_info"]["email"])
-            found_user = users_ref.where('email', '==', user)
-            found_user_dict = gtd(found_user.stream())[0]
-            return {
-                "breakfast":found_user_dict["breakfast"],
-                "lunch":found_user_dict["lunch"],
-                "dinner":found_user_dict["dinner"]
-                }
-    return{
-        "breakfast":False,
-        "lunch":False,
-        "dinner":False
-    }
-    #debug stuff
-    # else:
-    #     return {
-    #         "breakfast":False,
-    #         "lunch":False,
-    #         "dinner":False
-    #     }
 
 @app.route('/receive_rating', methods=['POST'])
 def receive_rating():
     if request.method == 'POST':
+
         print("Receieved a rating!")
         data = json.loads(request.data)
         print(data)
+        newRating = Rating(str(data["name"]),
+                           str(data["email"]),
+                           str(data["saltiness"]),
+                           str(data["spice"]),
+                           str(data["sweetness"]),
+                           str(data["cooking_time"]),
+                           str(data["comment"]),
+                           str(data["time"])
+                           )
+        db.session.add(newRating)
+
+        rating_user = User.query.filter_by(email=data['email']).first()
+        print(rating_user.email)
+        print(json.loads(rating_user.rated_meals))
+        rated_meals = json.loads(rating_user.rated_meals)
+        rated_meals[data['name']]=1
+        print(rated_meals)
+        rating_user.rated_meals = str(rated_meals).replace("\'","\"")
+
+        db.session.commit()
+
         return "Rating received!"
     else:
         return "what are you doing here?"
 
+
+
 @app.route('/all_ratings', methods=['GET'])
 def all_ratings():
-    return str(gtd(ratings_ref.stream()))
+    return get_all_ratings()
 
+def get_all_ratings():
+    print("Request to all ratings >>>>>>")
+    try:
+        print("hi")
+        all_ratings = Rating.query.all()
+        print(jsonify([e.serialize() for e in all_ratings]))
+        return jsonify([e.serialize() for e in all_ratings])
+    except Exception as e:
+        return(str(e))
 
 def get_menu():
 
@@ -303,7 +313,7 @@ def get_menu():
     'https://www.lawrenceville.org/campus-life/dining'}
 
     resp = requests.get('http://api.scraperapi.com', params=payload)
-    soup=BeautifulSoup(resp.text,'html.parser')
+    soup= BeautifulSoup(resp.text,'html.parser')
     # print soup
 
     items=soup.findAll("div",{"class":"event-detail"})
@@ -370,16 +380,28 @@ def parse_meal(meal):
 
 def update_daily_menu():
     print("Updating daily menu...")
-    docs = daily_menu_ref.limit(5).stream()
-    for doc in docs:
-        print(u'Deleting doc {} => {}'.format(doc.id, doc.to_dict()))
-        doc.reference.delete()
-    daily_menu_ref.document(generate_code(5)).set(get_menu())
+    previous_menu = DailyMenu.query.all()
+    if len(previous_menu) > 0:
+        for menu in previous_menu:
+            db.session.delete(menu)
+    db.session.commit()
+    menu_received = str(get_menu()).replace("\'", "\"").replace("\\xa0", " ")
+    print(">>>>>>>>>---<<<<<")
+    print(menu_received)
+    print(">>>>>>>>>-----<<<<<<")
+    new_menu = DailyMenu(menu_received)
+    db.session.add(new_menu)
+
+    all_users = User.query.all()
+    for user in all_users:
+        user.rated_meals = "{}"
+    db.session.commit()
+
     return "ok"
 
 
 scheduler.add_job(update_meals_cron,'cron', hour=4, minute=00, second=00)
-scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
+# scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
 scheduler.add_job(update_daily_menu, 'interval', hours=3)
 scheduler.start()
 
@@ -388,11 +410,12 @@ app.debug=True
 app.secret_key = os.environ['SECRET_KEY']
 
 #
-# debug:
-update_daily_menu()
+# debug - also find a way to do this when models are imported:
 
 
 if __name__ == '__main__':
+    if os.environ["FLASK_DEBUG"]:
+        update_daily_menu()
     app.config['SESSION_TYPE'] = 'filesystem'
     # app.config['SECRET_KEY'] = 'something something'
-    app.run()
+    app.run(port='3000')
