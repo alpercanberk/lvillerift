@@ -22,7 +22,7 @@ class Rating(db.Model):
         self.spice = spice
         self.sweetness = sweetness
         self.cooking_time = cooking_time
-        self.comment = comment
+        self.comment = comment.replace("\'","")
         self.time = time
 
     def __repr__(self):
