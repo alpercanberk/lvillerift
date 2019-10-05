@@ -8,7 +8,7 @@ import AdminPage from './components/AdminPage.js';
 import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, ListGroup } from 'react-bootstrap';
 import './App.css';
 import axios from "axios"
-import Logo from "./riftlogo1.png"
+import Logo from "./logo.png"
 
 import {
   BrowserRouter as Router,
@@ -140,7 +140,7 @@ class App extends Component{
           />
           <Navbar bg="light" expand="lg" color="red">
             <Navbar.Brand href="#home">
-              <span style={{"font-size":30}}>LIFE Surveys</span>
+              <img src={Logo} className='lville' style={{"height":50,"width":50}}/><span style={{"font-size":30}} class="logo-name">LIFE Surveys</span>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
