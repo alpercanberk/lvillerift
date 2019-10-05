@@ -383,8 +383,8 @@ app.secret_key = os.environ['SECRET_KEY']
 
 
 if __name__ == '__main__':
-    if os.environ["FLASK_DEBUG"]:
-        update_daily_menu()
+    # if os.environ["FLASK_DEBUG"]:
+    update_daily_menu()
     app.config['SESSION_TYPE'] = 'filesystem'
     # app.config['SECRET_KEY'] = 'something something'
     app.run(port='3000')
