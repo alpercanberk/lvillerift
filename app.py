@@ -127,15 +127,13 @@ def credentials_to_dict(credentials):
 def get_daily_menu():
     return get_menu(os.environ["SCRAPER_KEY"])
 
-# @app.before_request
-# def before_request():
-#     if(os.environ["FLASK_DEBUG"]):
-#         if(os.environ["FLASK_DEBUG"] != 1):
-#             if(not request.url.startswith('http://127')):
-#                 if request.url.startswith('http://'):
-#                     url = request.url.replace('http://', 'https://', 1)
-#                     code = 301
-#                     return redirect(url, code=code)
+@app.before_request
+def before_request():
+    if(not os.environ["FLASK_DEBUG"]):
+        if request.url.startswith('http://'):
+            url = request.url.replace('http://', 'https://', 1)
+            code = 301
+            return redirect(url, code=code)
 
 
 @app.route("/")
@@ -370,7 +368,6 @@ def refresh_daily_ratings():
 
 
 # scheduler.add_job(clear_ratings, 'cron', day_of_week="mon", hour=4, minute=0, second=0)
-update_daily_menu()
 scheduler.add_job(update_daily_menu, 'interval', hours=3)
 scheduler.add_job(refresh_daily_ratings, 'interval', hours=12)
 scheduler.start()
