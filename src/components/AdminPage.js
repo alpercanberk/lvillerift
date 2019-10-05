@@ -53,7 +53,7 @@ function numberToRating(number){
 //
 if(window.ratings.length > 100){
   console.log(window.ratings.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"'))
-  ratings = JSON.parse(window.ratings.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"'));
+  ratings = JSON.parse(window.ratings.replace(new RegExp('u&#39;', 'g'),'"').replace(new RegExp('&#39;', 'g'),'"').replace(new RegExp('&#34;', 'g'),'"'));
 }
 
 
