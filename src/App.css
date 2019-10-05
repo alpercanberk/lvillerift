@@ -155,8 +155,29 @@
   color:white !important;
 }
 
+*{
+  font-family:"Avenir" !important;
+  font-weight:lighter !important;
+}
+
+h4{
+  font-weight:500 !important;
+}
+
+h5{
+  font-weight:450 !important;
+}
+
+.form-label{
+  font-weight:450 !important;
+}
+
+span, .meal_name{
+  font-weight:450 !important;
+}
+
 nav.navbar.navbar-expand-lg.navbar-light.bg-light {
-  background-color:rgba(0,0,0,0) !important;
+  background-color:rgb(245,245,245) !important;
 }
 
 a.nav-link {
@@ -168,7 +189,9 @@ a.nav-link.active {
   color: #BA1A26 !important;
 }
 
-
+.body{
+  font:Helvetica;
+}
 
 .stars{
   margin:10px !important;

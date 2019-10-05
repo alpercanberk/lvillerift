@@ -140,7 +140,7 @@ class App extends Component{
           />
           <Navbar bg="light" expand="lg" color="red">
             <Navbar.Brand href="#home">
-              <span style={{"font-size":30}}>LIFE</span>
+              <span style={{"font-size":30}}>LIFE Surveys</span>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">

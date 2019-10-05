@@ -126,7 +126,7 @@ class NewRating extends Component{
                   <Card>
                     <Card.Header>
                       <Accordion.Toggle as={Button} variant="none" eventKey="0" class="accordion-toggle" onClick={this.updateActive}>
-                        <h5><span style={{"float":"left"}}>{this.props.item}</span>{this.renderActive(rated_meals.includes(this.props.item))}</h5>
+                        <h5><span style={{"float":"left"}} class="meal-name">{this.props.item}</span>{this.renderActive(rated_meals.includes(this.props.item))}</h5>
                       </Accordion.Toggle>
                     </Card.Header>
                     <Accordion.Collapse eventKey="0">
