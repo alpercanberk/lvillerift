@@ -286,7 +286,7 @@ def get_menu():
 
     final_item_list = []
 
-    useless_words = ["yogurt", "muffins", "dessert", "soup"]
+    useless_words = ["yogurt", "muffins", "dessert", "soup", "breads"]
 
     if "Brunch" in first_title:
         print("Brunch!")
@@ -341,12 +341,6 @@ def get_menu():
                     daily_items[i].append(em_text)
 
         return {
-            "Dinner":{
-                "date":date,
-                "type":"Dinner",
-                "title":"Dinner - " + date,
-                "items":parse_more(daily_items[2])
-            },
             "Breakfast":{
                 "date":date,
                 "type":"Breakfast",
@@ -358,7 +352,12 @@ def get_menu():
                 "type":"Lunch",
                 "title":"Lunch - " + date,
                 "items":parse_more(daily_items[1])
-            }
+            },"Dinner":{
+                "date":date,
+                "type":"Dinner",
+                "title":"Dinner - " + date,
+                "items":parse_more(daily_items[2])
+            },
         }
 
 def update_daily_menu():
