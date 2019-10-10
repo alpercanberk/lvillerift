@@ -380,12 +380,11 @@ def update_daily_menu():
             db.session.delete(menu)
     db.session.commit()
     menu_received = str(get_menu()).replace("\'", "\"").replace("\\xa0", " ")
-    print(">>>>>>>>>---<<<<<")
     print(menu_received)
-    print(">>>>>>>>>-----<<<<<<")
     new_menu = DailyMenu(menu_received)
     db.session.add(new_menu)
     db.session.commit()
+    print(new_menu)
 
     return "ok"
 
