@@ -271,6 +271,9 @@ def get_all_ratings():
 def parse_more(items):
     return [item.replace('w/',"with ").replace("&", "and").replace(": ", "").replace(" /", "") for item in items]
 
+def check_em(em):
+    if(str(em)[5] == "/" or "Soup" in em):
+        return True
 
 def get_menu():
 
@@ -295,7 +298,7 @@ def get_menu():
         for i in range(0,2):
             ems_brunch = all_items[i].findAll("em")
             for em in ems_brunch:
-                if(str(em)[5] == "/"):
+                if(check_em(em)):
                     continue
                 em_text = em.get_text()
                 if(check_useless(useless_words, em_text)):
