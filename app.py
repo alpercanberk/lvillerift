@@ -28,7 +28,7 @@ import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 
 admin_list = [
-    "acanberk21@gmail.com",
+    "acanberk21@lawrenceville.org",
     "atokarski20@lawrenceville.org",
     "alper.tu.canberk@gmail.com"
 ]
@@ -166,7 +166,7 @@ def index():
                                        ratings = ratings
                                        )
 
-            if("@lawrenceville.org" in flask.session["user_info"]["email"]):
+            elif("@lawrenceville.org" in flask.session["user_info"]["email"]):
 
                 if not user:
                     create_new_user(str(flask.session['user_info']['name']), str(flask.session['user_info']['email']))
