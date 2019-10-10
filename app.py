@@ -31,17 +31,6 @@ admin_list = [
     "acanberk21@gmail.com",
     "atokarski20@lawrenceville.org"
 ]
-#
-# firebase_credentials = json.loads(os.environ['FIREBASE_CREDENTIALS'])
-# cred = credentials.Certificate(firebase_credentials)
-#
-# firebase_admin.initialize_app(cred)
-# firebase_db = firestore.client()
-#
-# users_ref = firebase_db.collection('users')
-# # completed_ref = firebase_db.collection('completed')
-# daily_menu_ref = firebase_db.collection('daily_menu')
-
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -54,6 +43,13 @@ app.register_blueprint(routes)
 from models import *
 
 scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
+
+
+def check_useless(useless_list, text):
+    for useless in useless_list:
+        if useless.lower() in text.lower():
+            return False
+    return True
 
 def first_name(name):
     l = name.split(" ")
@@ -273,7 +269,7 @@ def get_all_ratings():
         return(str(e))
 
 def parse_more(items):
-    return [item.replace('w/',"with ").replace("&", "and") for item in items]
+    return [item.replace('w/',"with ").replace("&", "and").replace(": ", "").replace(" /", "") for item in items]
 
 
 def get_menu():
