@@ -340,35 +340,35 @@ def get_menu():
 
 
     else:
-        all_items = [[],[],[]]
+        daily_items[[],[],[]]
         for i in range(0,3):
-            ems_brunch = all_items[i].findAll("em")
-            for em in ems_brunch:
+            current_ems = all_items[i].findAll("em")
+            for em in current_ems:
                 if(str(em)[5] == "/"):
                     continue
                 em_text = em.get_text()
                 if(check_useless(useless_words, em_text)):
                     print(em_text)
-                    all_items[i].append(em_text)
+                    daily_items[i].append(em_text)
 
         return {
             "Dinner":{
                 "date":date,
                 "type":"Dinner",
                 "title":"Dinner - " + date,
-                "items":parse_more(all_items[2])
+                "items":parse_more(daily_items[2])
             },
             "Breakfast":{
                 "date":date,
                 "type":"Breakfast",
                 "title":"Breakfast - " + date,
-                "items":parse_more(all_items[0])
+                "items":parse_more(daily_items[0])
             },
             "Lunch":{
                 "date":date,
                 "type":"Lunch",
                 "title":"Lunch - " + date,
-                "items":parse_more(all_items[1])
+                "items":parse_more(daily_items[1])
             }
         }
 
