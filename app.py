@@ -297,7 +297,7 @@ def get_menu():
 
     final_item_list = []
 
-    useless_words = [ "yogurt", "yogurt", "muffins", "dessert", "soup"]
+    useless_words = ["yogurt", "muffins", "dessert", "soup"]
 
     if "Brunch" in first_title:
         print("Brunch!")
@@ -340,7 +340,7 @@ def get_menu():
 
 
     else:
-        all_items = []
+        all_items = [[],[],[]]
         for i in range(0,3):
             ems_brunch = all_items[i].findAll("em")
             for em in ems_brunch:
