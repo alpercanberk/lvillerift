@@ -113,13 +113,6 @@ def gtd(generator):
         list.append(n_dict)
     return list
 
-
-def check_useless(useless_list, text):
-    for useless in useless_list:
-        if useless.lower() in text.lower():
-            return False
-    return True
-
 def credentials_to_dict(credentials):
     return {'token': credentials.token,
           'refresh_token': credentials.refresh_token,
@@ -280,12 +273,12 @@ def get_all_ratings():
         return(str(e))
 
 def parse_more(items):
-    return [item.replace('w/',"with").replace("&", "and") for item in items]
+    return [item.replace('w/',"with ").replace("&", "and") for item in items]
 
 
 def get_menu():
 
-    payload={'key': os.environ["SCRAPER_KEY"], 'url':
+    payload={'key': 'c25d2485c37e9764217cc5476a73be10', 'url':
     'https://www.lawrenceville.org/campus-life/dining'}
 
     resp = requests.get('http://api.scraperapi.com', params=payload)
@@ -340,7 +333,7 @@ def get_menu():
 
 
     else:
-        daily_items[[],[],[]]
+        daily_items = [[],[],[]]
         for i in range(0,3):
             current_ems = all_items[i].findAll("em")
             for em in current_ems:
