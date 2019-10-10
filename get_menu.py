@@ -11,27 +11,118 @@ def get_menu(api_key):
     resp = requests.get('http://api.scraperapi.com', params=payload)
     soup=BeautifulSoup(resp.text,'html.parser')
     # print soup
+    first_title = soup.findAll("div",{"class":"event-detail"})[0].get_text()
+    date = soup.findAll("span", {"class":"start-date"})[0].get_text()
+    all_items = soup.findAll("div",{"class":"brief-description"})
 
-    items=soup.findAll("div",{"class":"event-detail"})
-    items_list = []
-    final_menu = {}
+    final_item_list = []
 
+    useless_words = [ "yogurt", "yogurt", "muffins", "dessert", "soup"]
 
-    for item in items:
-        items_list.append(item.get_text())
+    if "Brunch" in first_title:
+        print("Brunch!")
+        brunch_items = []
+        dinner_items = []
+        for i in range(0,2):
+            ems_brunch = all_items[i].findAll("em")
+            for em in ems_brunch:
+                if(str(em)[5] == "/"):
+                    continue
+                em_text = em.get_text()
+                if(check_useless(useless_words, em_text)):
+                    print(em_text)
+                    brunch_items.append(em_text)
 
-    for i in range(len(items_list)):
-        items_list[i] = parse_meal(split_meal(items_list[i]))
+        ems_dinner = all_items[3].findAll("em")
+        for em in ems_dinner:
+            if(str(em)[5] == "/"):
+                continue
+            em_text = em.get_text()
+            if(check_useless(useless_words, em_text)):
+                print(em_text)
+                dinner_items.append(em_text)
 
-    for meal in items_list:
-        final_menu[meal["type"]]={
-            "date":meal["date"],
-            "type":meal["type"],
-            "title":meal["type"].capitalize() + " - " + meal["date"],
-            "items":meal["items"]
+        return{
+            "Brunch":{
+                "date":date,
+                "type":"Brunch",
+                "title":"Brunch - " + date,
+                "items":brunch_items
+            },
+            "Dinner":{
+                "date":date,
+                "type":"Dinner",
+                "title":"Dinner - " + date,
+                "items":dinner_items
+            }
         }
 
-    return final_menu
+
+
+    else:
+        all_items = []
+        for i in range(0,3):
+            ems_brunch = all_items[i].findAll("em")
+            for em in ems_brunch:
+                if(str(em)[5] == "/"):
+                    continue
+                em_text = em.get_text()
+                if(check_useless(useless_words, em_text)):
+                    print(em_text)
+                    all_items[i].append(em_text)
+
+        return {
+            "Dinner":{
+                "date":date,
+                "type":"Dinner",
+                "title":"Dinner - " + date,
+                "items":all_items[2]
+            },
+            "Breakfast":{
+                "date":date,
+                "type":"Breakfast",
+                "title":"Breakfast - " + date,
+                "items":all_items[0]
+            },
+            "Lunch":{
+                "date":date,
+                "type":"Lunch",
+                "title":"Lunch - " + date,
+                "items":all_items[1]
+            }
+        }
+
+
+
+        print("regular!")
+
+
+    # new_items_list = []
+    # a = []
+    # final_menu = {}
+    #
+    #
+    # for item in items:
+    #     items_list.append(item)
+
+
+    # for i in range(len(items_list)):
+    #     items_list[i] = parse_meal(split_meal(items_list[i]))
+    #
+    # for meal in items_list:
+    #     final_menu[meal["type"]]={
+    #         "date":meal["date"],
+    #         "type":meal["type"],
+    #         "title":meal["type"].capitalize() + " - " + meal["date"],
+    #         "items":meal["items"]
+    #     }
+
+    # return final_menu
+def check_useless(useless_list, text):
+    for useless in useless_list:
+        if useless.lower() in text.lower():
+            return False
+    return True
 
 def split_meal(item):
     item = item

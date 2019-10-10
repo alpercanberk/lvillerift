@@ -24,26 +24,22 @@ var rateURL = window.CURRENT_HOST + "receive_rating";
 
 var is_admin = window.admin
 
-var meal_types = ["breakfast", "lunch", "dinner"]
-
-
-
 var menu = {
-  "breakfast":{
+  "Breakfast":{
     "date":"August 19",
     "time":0,
     "title":"Breakfast - August 19",
     "items":["Belgium Waffles", "Homefried Potatoes", "Sausage Links", "Assorted Pastries"],
     "type":"breakfast"
   },
-  "lunch":{
+  "Lunch":{
     "date":"August 19",
     "time":0,
     "title":"Lunch - August 19",
     "items":["French Onion Soup", "Mako Shark Tacos", "Kale Sautee", "Ice Cream"],
     "type":"breakfast"
   },
-  "dinner":{
+  "Dinner":{
     "date":"August 19",
     "time":0,
     "title":"Dinner - August 19",
@@ -97,13 +93,12 @@ class App extends Component{
     }
   }
 
-  renderRating(meal_types){
+  renderRating(){
     return(
       <div>
         {
-          meal_types.map((meal_type) => {
+          Object.keys(menu).map((meal_type) => {
             return(
-
               <Card style={{"marginLeft":30, "marginRight":30, "marginTop":30}}>
                 <Card.Header className="menu-title"><h4 style={{"margin":15}}>{menu[meal_type].title}</h4></Card.Header>
                 <ListGroup variant="flush">
@@ -162,7 +157,7 @@ class App extends Component{
           <Route exact path="/" render={() => <Redirect to="/home" />} />
           <Route path="/mission" component={Mission} />
           <Route path="/admin" component={AdminPage} />
-          <Route path="/home" render={() => <div>{this.renderGreeting()}{this.renderRating(meal_types)}</div>}/>
+          <Route path="/home" render={() => <div>{this.renderGreeting()}{this.renderRating()}</div>}/>
         </HashRouter>
       </div>
     );
