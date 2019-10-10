@@ -29,7 +29,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 admin_list = [
     "acanberk21@gmail.com",
-    "atokarski20@lawrenceville.org"
+    "atokarski20@lawrenceville.org",
+    "alper.tu.canberk@gmail.com"
 ]
 
 app = Flask(__name__)
@@ -269,10 +270,10 @@ def get_all_ratings():
         return(str(e))
 
 def parse_more(items):
-    return [item.replace('w/',"with ").replace("&", "and").replace(": ", "").replace(" /", "") for item in items]
+    return [item.replace('w/',"with ").replace("&", "and").replace(" /", "").replace(": ", "Soup: ") for item in items]
 
 def check_em(em):
-    if(str(em)[5] == "/" or "Soup" in em):
+    if(str(em)[5] == "/" or "soup" in str(em).lower()):
         return True
 
 def get_menu():
@@ -289,7 +290,7 @@ def get_menu():
 
     final_item_list = []
 
-    useless_words = ["yogurt", "muffins", "dessert", "soup", "breads"]
+    useless_words = ["yogurt", "muffins", "dessert", "breads", "soup"]
 
     if "Brunch" in first_title:
         print("Brunch!")
