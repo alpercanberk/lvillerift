@@ -166,6 +166,7 @@ class App extends Component{
         <div class="footer">
         <img src={Logo} className="lvillelogo"/>
         <img src={SustainableFare} className="sustainable"/>
+      {/* <span className="copyright">LIFE Surveys © 2019</span> */}
         </div>
       </div>
     );

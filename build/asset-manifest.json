@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.bd479fe1.chunk.css",
+    "main.css": "/static/css/main.84bde169.chunk.css",
     "main.js": "/static/js/main.9a852a11.chunk.js",
     "main.js.map": "/static/js/main.9a852a11.chunk.js.map",
     "runtime~main.js": "/static/js/runtime~main.ea92a0de.js",
@@ -8,9 +8,9 @@
     "static/js/2.4fc6711a.chunk.js": "/static/js/2.4fc6711a.chunk.js",
     "static/js/2.4fc6711a.chunk.js.map": "/static/js/2.4fc6711a.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.780450852d1513e3821a21bb89643be1.js": "/precache-manifest.780450852d1513e3821a21bb89643be1.js",
+    "precache-manifest.1a36275d678c8f2c5c1fec40ec639046.js": "/precache-manifest.1a36275d678c8f2c5c1fec40ec639046.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/main.bd479fe1.chunk.css.map": "/static/css/main.bd479fe1.chunk.css.map",
+    "static/css/main.84bde169.chunk.css.map": "/static/css/main.84bde169.chunk.css.map",
     "static/media/lifelogo.png": "/static/media/lifelogo.b0d544ed.png",
     "static/media/logo.png": "/static/media/logo.4404bfe9.png"
   }
