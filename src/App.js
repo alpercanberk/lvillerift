@@ -9,6 +9,8 @@ import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, C
 import './App.css';
 import axios from "axios"
 import Logo from "./logo.png"
+import LifeLogo from "./lifelogo.png"
+
 
 import {
   BrowserRouter as Router,
@@ -135,7 +137,7 @@ class App extends Component{
           />
           <Navbar bg="light" expand="lg" color="red">
             <Navbar.Brand href="#home">
-              <img src={Logo} className='lville' style={{"height":50,"width":50}}/><span style={{"font-size":30}} class="logo-name">LIFE Surveys</span>
+              <img src={LifeLogo} className='lville'/>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
