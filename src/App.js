@@ -10,6 +10,8 @@ import './App.css';
 import axios from "axios"
 import Logo from "./logo.png"
 import LifeLogo from "./lifelogo.png"
+import SustainableFare from "./sustainablefare.png"
+
 
 
 import {
@@ -161,6 +163,10 @@ class App extends Component{
           <Route path="/admin" component={AdminPage} />
           <Route path="/home" render={() => <div>{this.renderGreeting()}{this.renderRating()}</div>}/>
         </HashRouter>
+        <div class="footer">
+        <img src={Logo} className="lvillelogo"/>
+        <img src={SustainableFare} className="sustainable"/>
+        </div>
       </div>
     );
   }
