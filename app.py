@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, redirect, render_template, request, jsonify, Response
 import os
 import flask
@@ -30,7 +31,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 admin_list = [
     "acanberk21@lawrenceville.org",
     "atokarski20@lawrenceville.org",
-    "alper.tu.canberk@gmail.com"
+    "alper.tu.canberk@gmail.com",
+    "ekosoff@lawrenceville.org",
+    "ggiberson@lawrenceville.org"
 ]
 
 app = Flask(__name__)
