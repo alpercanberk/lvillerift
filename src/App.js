@@ -88,7 +88,7 @@ class App extends Component{
   renderGreeting(){
     if(window.user_name){
       return(
-        <h1 className="greeting">Welcome {window.user_name}, what do you think about Irwin today?</h1>
+        <h1 className="greeting">Welcome {window.user_name}, what do you think about the dining hall today?</h1>
       )
     }
     else{
