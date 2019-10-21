@@ -49,6 +49,13 @@
   margin:10px 0px !important;
 }
 
+.accordion {
+    margin: 3px;
+    padding: 3px;
+    border:1px solid #ddd;
+    border-radius:5px;
+}
+
 .accordion>.card .card-header {
   background-color:white !important;
   border:none !important;
