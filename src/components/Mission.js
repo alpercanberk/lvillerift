@@ -6,15 +6,17 @@ export default class Mission extends Component {
   render(){
     return(
       <Container>
-      <h1 class="mission-title">Mission</h1>
+      <h1 class="mission-title">Our Mission</h1>
       <p>
-      Replace this
+        To increase useful student feedback on dining hall meals to improve mealtime attendance and equip students with the fuel necessary for classroom learning.
       </p>
       <p>
-      RIFT is sleek, fast and convenient. Each meal rating takes less than a minute and the dining hall staff can see your feedback instantly. It is important that you try to give as much feedback as possible and that you make your rating a constructive criticism.
+        To foster a stronger sense of community from daily meals together
       </p>
       <p>
-      If you encounter any problems with the software or if you have suggestions about the website, feel free to contact Alper Canberk at acanberk21@lawrenceville.org
+        To reduce food waste
+      </p>
+      <p>
       </p>
       </Container>
     )

@@ -306,7 +306,10 @@ def get_menu():
                     print(em_text)
                     brunch_items.append(em_text)
 
-        ems_dinner = all_items[3].findAll("em")
+        for i in range(0, len(all_items)):
+            print(all_items[i], "\n\n\n")
+
+        ems_dinner = all_items[2].findAll("em")
         for em in ems_dinner:
             if(str(em)[5] == "/"):
                 continue
