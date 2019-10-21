@@ -4,6 +4,7 @@ import Mission from './components/Mission.js';
 import NewRating from './components/NewRating.js';
 import MenuDisplay from './components/MenuDisplay.js';
 import AdminPage from './components/AdminPage.js';
+import Home from './components/Home.js'
 
 import { Button, Jumbotron, Navbar, Nav, FormControl, NavDropdown, Form, Card, Container, ListGroup } from 'react-bootstrap';
 import './App.css';
@@ -146,13 +147,7 @@ class App extends Component{
               <Nav className="mr-auto">
                 <Nav.Link href="#home">Home</Nav.Link>
                 <Nav.Link href="#forms">Forms</Nav.Link>
-                <NavDropdown title="Statistics" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="#action/3.1">Work</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">In</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">Progress</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">Check later</NavDropdown.Item>
-                </NavDropdown>
+                <Nav.Link href="#mission">Mission</Nav.Link>
                 {window.admin ? <Nav.Link href="#admin">Admin Page</Nav.Link>:<div/>}
               </Nav>
               {this.renderSignInButton()}
@@ -161,7 +156,8 @@ class App extends Component{
           <Route exact path="/" render={() => <Redirect to="/home" />} />
           <Route path="/forms" render={() => <div>{this.renderGreeting()}{this.renderRating()}</div>}/>
           <Route path="/admin" component={AdminPage} />
-          <Route path="/home" component={Mission} />
+          <Route path="/mission" component={Mission} />
+          <Route path="/home" component={Home} />
         </HashRouter>
         <div class="footer">
         <img src={Logo} className="lvillelogo"/>

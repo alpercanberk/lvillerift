@@ -22,6 +22,13 @@
   border-radius:6px !important;
 }
 
+.carousel{
+  width:500px !important;
+  height:500px !important;
+  border-radius:100px !important;
+  margin:auto;
+}
+
 .add-rating-button-text{
   width: 100% !important;
   line-height: 1;
@@ -65,6 +72,15 @@
   text-align:center;
 }
 
+.home-title{
+  text-align:center;
+  font-size:50px;
+  padding:30px;
+  width:100%;
+  font-weight:bold !important;
+  color:#AD2525;
+}
+
 .lville{
   height:55px;
   width:155px;
@@ -74,6 +90,10 @@
   height:70px;
   margin:5px;
   width:70px;
+}
+
+.carousel-inner{
+  border-radius:10px;
 }
 
 .copyright{
@@ -246,10 +266,19 @@ a.nav-link.active {
   width:180px;
 }
 
+.navbar-light .navbar-nav .nav-link {
+  font-size:20px;
+}
+
 .select{
   border: 1px solid black !important;
 }
 
 .mission-title{
   margin: 20px;
+  font-size:75px;
+}
+
+.mission-element{
+  font-size:30px;
 }
