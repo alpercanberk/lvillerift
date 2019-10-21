@@ -23,8 +23,9 @@
 }
 
 .carousel{
-  width:350px !important;
-  height:350px !important;
+  max-width:30em;
+  width: auto/9 !important;
+  height:auto !important;
   border-radius:100px !important;
   margin:auto;
 }
