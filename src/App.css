@@ -27,7 +27,38 @@
   width: auto/9 !important;
   height:auto !important;
   border-radius:100px !important;
-  margin:auto;
+  margin:30px auto;
+}
+
+.mission-image{
+  display: block;
+  margin-top:30px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  border-radius:5px;
+}
+
+#poll{
+  border:5px solid black;
+}
+
+.home-box{
+  border-radius:5px;
+  border:5px solid #BA1A26;
+  padding:8px;
+  margin:20px;
+  margin-top:0px;
+  height:100%;
+  width:100%;
+}
+
+.home-sub{
+  text-align:center;
+}
+
+.home-box > * > li{
+  font-size:20px;
 }
 
 .add-rating-button-text{
@@ -39,6 +70,19 @@
   margin:5px 10px !important;
   border-radius: 5px !important;
   background-color:white !important;
+}
+
+.home-suggest-button{
+  width:100%;
+}
+
+.home-box > button.btn.btn-primary {
+  width:100%;
+}
+
+textarea{
+  border-radius:5px;
+  width:100%;
 }
 
 .additional-rating{

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import '../App.css';
 import { Button, Container } from 'react-bootstrap';
 
+import MissionImage from '../images/mission.jpg'
+
 export default class Mission extends Component {
   render(){
     return(
@@ -18,6 +20,7 @@ export default class Mission extends Component {
           To protect the environment by reducing food waste in dining halls
         </li>
       </ul>
+      <img src={MissionImage} class="mission-image"></img>
       </Container>
     )
   }

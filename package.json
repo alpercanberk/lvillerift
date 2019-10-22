@@ -10,6 +10,7 @@
     "react-bootstrap-star-rating": "^3.5.5-alpha.0.3",
     "react-dom": "^16.9.0",
     "react-multi-carousel": "^2.3.0",
+    "react-polls": "^1.2.0",
     "react-scripts": "3.1.1"
   },
   "scripts": {
