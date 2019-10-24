@@ -39,6 +39,10 @@
   border-radius:5px;
 }
 
+.navbar-light .navbar-nav .nav-link {
+  margin-left:30px !important;
+}
+
 #poll{
   border:5px solid black;
 }
