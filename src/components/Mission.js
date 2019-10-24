@@ -11,7 +11,7 @@ export default class Mission extends Component {
       <h1 class="mission-title">Our Mission</h1>
       <ul>
         <li class="mission-element">
-          To increase useful student feedback on dining hall meals to improve mealtime attendance and equip students with the fuel necessary for classroom learning.
+          To increase useful student feedback on dining hall meals to improve mealtime attendance and equip students with the fuel necessary for classroom learning
         </li>
         <li class="mission-element">
           To foster a stronger sense of community from daily meals together
