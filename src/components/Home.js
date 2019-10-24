@@ -102,7 +102,7 @@ export default class Home extends Component {
           <div class="home-box" id="poll"><h1 class="home-sub" style={{"color":"black"}} >Quick Poll</h1>
             <Poll question={pollQuestion} answers={pollAnswers} onVote={this.handleVote} />
           </div>
-          <div class="home-box"><h1 class="home-sub" style={{"color":"#AD2525"}}>Make A Suggestion</h1>
+          <div class="home-box"><h1 class="home-sub" style={{"color":"#AD2525"}}>Make a Suggestion</h1>
           <textarea>
           </textarea>
           <Button class="home-suggest-button">Submit</Button>

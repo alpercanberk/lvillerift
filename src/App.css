@@ -35,7 +35,7 @@
   margin-top:30px;
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
+  width: 60%;
   border-radius:5px;
 }
 
@@ -55,6 +55,7 @@
 
 .home-sub{
   text-align:center;
+  font-size:calc(30px + 1vw);
 }
 
 .home-box > * > li{
