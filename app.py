@@ -407,6 +407,7 @@ app.secret_key = os.environ['SECRET_KEY']
 #
 # debug - also find a way to do this when models are imported:
 if __name__ == '__main__':
+    db.session.rollback()
     # if os.environ["FLASK_DEBUG"]:
     update_daily_menu()
     app.config['SESSION_TYPE'] = 'filesystem'
