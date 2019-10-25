@@ -139,8 +139,9 @@ def before_request():
 
 @app.route("/")
 def index():
-    # a = DailyMenu.query.all()
-    menu = DailyMenu.query.first().serialize()
+    a = DailyMenu.query.all()
+    menu = a[0].serialize()
+    # menu = DailyMenu.query.first().serialize()
 
     if(flask.session):
         if('credentials' in flask.session and 'user_info' in flask.session):
