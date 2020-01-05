@@ -158,7 +158,6 @@ def index():
                     create_new_user(str(flask.session['user_info']['name']), str(flask.session['user_info']['email']))
 
                 ratings = [rating.serialize() for rating in Rating.query.all()]
-                print(ratings)
 
                 return render_template('index.html',
                                        user_email = str(flask.session['user_info']['email']),
@@ -301,19 +300,18 @@ def get_menu():
         brunch_items = []
         dinner_items = []
         for i in range(0,2):
-            ems_brunch = all_items[i].findAll("em")
+            ems_brunch = all_items[i].findAll("div")
             for em in ems_brunch:
                 if(check_em(em)):
                     continue
                 em_text = em.get_text()
                 if(check_useless(useless_words, em_text)):
-                    print(em_text)
                     brunch_items.append(em_text)
 
         for i in range(0, len(all_items)):
             print(all_items[i], "\n\n\n")
 
-        ems_dinner = all_items[2].findAll("em")
+        ems_dinner = all_items[2].findAll("div")
         for em in ems_dinner:
             if(str(em)[5] == "/"):
                 continue
@@ -337,13 +335,12 @@ def get_menu():
             }
         }
 
-        print("Result:", result)
         return result
 
     else:
         daily_items = [[],[],[]]
         for i in range(0,3):
-            current_ems = all_items[i].findAll("em")
+            current_ems = all_items[i].findAll("div")
             for em in current_ems:
                 if(str(em)[5] == "/"):
                     continue
@@ -372,7 +369,6 @@ def get_menu():
             },
         }
 
-        print("Result:", result)
         return result
 
 def update_daily_menu():
@@ -413,6 +409,7 @@ app.secret_key = os.environ['SECRET_KEY']
 if __name__ == '__main__':
     db.session.rollback()
     # if os.environ["FLASK_DEBUG"]:
+    print(">>>>>>>>>>> STARTING >>>>>>>>>>>>")
     update_daily_menu()
     app.config['SESSION_TYPE'] = 'filesystem'
     # app.config['SECRET_KEY'] = 'something something'
