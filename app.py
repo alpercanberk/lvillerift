@@ -322,7 +322,7 @@ def get_menu():
                 print(em_text)
                 dinner_items.append(em_text)
 
-        return{
+        result = {
             "Brunch":{
                 "date":date,
                 "type":"Brunch",
@@ -337,7 +337,8 @@ def get_menu():
             }
         }
 
-
+        print("Result:", result)
+        return result
 
     else:
         daily_items = [[],[],[]]
@@ -351,7 +352,7 @@ def get_menu():
                     print(em_text)
                     daily_items[i].append(em_text)
 
-        return {
+        result = {
             "Breakfast":{
                 "date":date,
                 "type":"Breakfast",
@@ -370,6 +371,9 @@ def get_menu():
                 "items":parse_more(daily_items[2])
             },
         }
+
+        print("Result:", result)
+        return result
 
 def update_daily_menu():
     print("Updating daily menu...")
