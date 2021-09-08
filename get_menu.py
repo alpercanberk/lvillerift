@@ -17,7 +17,7 @@ def check_useless(useless_list, text):
 def get_menu():
 
     payload={'key': 'c25d2485c37e9764217cc5476a73be10', 'url':
-    'https://www.lawrenceville.org/campus-life/dining'}
+    'https://lawrenceville.myschoolapp.com/page/campus-life/dining?siteId=998&ssl=1'}
 
     resp = requests.get('http://api.scraperapi.com', params=payload)
     soup=BeautifulSoup(resp.text,'html.parser')
