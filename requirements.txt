@@ -59,7 +59,7 @@ pycparser==2.19
 pycrypto==2.6.1
 python-dateutil==2.8.0
 python-editor==1.0.4
-python-jwt==3.2.4
+python-jwt==3.3.4
 pytz==2019.2
 requests==2.22.0
 requests-oauthlib==1.2.0
